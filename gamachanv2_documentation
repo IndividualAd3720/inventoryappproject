@@ -1,0 +1,957 @@
+# Inventory Management System - Complete Documentation
+
+## Table of Contents
+1. [Overview](#overview)
+2. [Features](#features)
+3. [System Architecture](#system-architecture)
+4. [Getting Started](#getting-started)
+5. [User Guide](#user-guide)
+6. [API Documentation](#api-documentation)
+7. [Database Schema](#database-schema)
+8. [Technical Details](#technical-details)
+9. [Deployment](#deployment)
+
+---
+
+## Overview
+
+The Inventory Management System is a full-stack web application designed to manage multi-branch inventory, create quotations, track employee attendance, and integrate with e-commerce platforms. Built with modern web technologies, it provides a comprehensive solution for small to medium businesses.
+
+### Key Technologies
+- **Backend**: Python 3.11 + Flask + SQLAlchemy
+- **Frontend**: React 18 + Vite + Tailwind CSS
+- **Database**: PostgreSQL (permanent storage)
+- **Authentication**: JWT tokens
+- **Hosting**: Replit
+
+### System Status
+- **Backend**: Running on port 3000
+- **Frontend**: Running on port 5000
+- **Database**: PostgreSQL with permanent data persistence
+- **Default Admin**: username `admin`, password `admin123`
+
+---
+
+## Features
+
+### 1. Multi-Branch Inventory Management
+- **Branch Support**: Manage inventory across multiple locations (Main Warehouse, Estancia Mall, Greenhills Mall)
+- **Product Management**: Add, edit, delete products with detailed information
+- **Stock Tracking**: Real-time stock levels with automatic alerts
+- **Dynamic Stock Levels**: Percentage-based thresholds (LOW <25%, MEDIUM 25-50%, HIGH >50%)
+- **Product Details**:
+  - Product Type (categorization)
+  - Name
+  - SKU (Stock Keeping Unit)
+  - Unit Price
+  - Current Stock
+  - Target Stock
+  - Status (active/inactive)
+  - Platform Integration IDs
+
+### 2. User Authentication & Authorization
+- **Role-Based Access Control** (3 roles):
+  - **Admin**: Full system access, user management, all CRUD operations
+  - **Manager**: Create/edit inventory and quotations, view attendance
+  - **Viewer**: Read-only access to inventory and quotations
+- **JWT Authentication**: Secure token-based authentication (24-hour expiry)
+- **Simple Registration**: Username and password only (no email required)
+
+### 3. Quotation System
+- **Quotation Builder**: Create professional quotations with product selection
+- **Product Search**: Type-ahead search by name, SKU, or product type
+- **Pricing Calculations**:
+  - Subtotal (sum of all items)
+  - Discount (percentage-based)
+  - VAT (default 0% for VAT-inclusive pricing)
+  - Shipping Fee (added to total, excluded from VAT)
+- **Customer Information**:
+  - Name (required)
+  - Email
+  - Phone
+  - Address
+  - Company Name
+  - TIN (Tax Identification Number)
+  - PO Number
+  - Valid Until Date
+  - Notes
+- **Preview & Print**: Professional quotation preview with company branding and payment details
+
+### 4. Employee Attendance & Payroll
+- **Employee Management**: Add employees with daily rates
+- **Attendance Logging**:
+  - Date
+  - Time In / Time Out
+  - Shift Type (Regular or Field Work)
+  - Automatic hours calculation
+- **Payroll Calculations**:
+  - Regular shifts: Daily rate
+  - Field work: Hourly rate (daily rate ÷ 8)
+  - Lunch deduction: 1 hour for shifts > 4 hours
+  - Night differential: 10% bonus for 10 PM - 6 AM shifts
+- **Cutoff Reports**: Automatic payroll summaries for periods (26-10 and 11-25)
+- **CSV Import/Export**: Bulk import attendance and export payroll data
+
+### 5. CSV Import/Export
+- **Inventory Import**: Bulk upload products from CSV
+- **Multi-Encoding Support**: UTF-8, Windows-1252, Latin-1 for special characters
+- **Data Validation**: Automatic validation with error reporting
+- **Inventory Export**: Download inventory data with filters
+- **Attendance Import**: Bulk upload attendance records
+- **Payroll Export**: Export attendance and payroll data for submission
+
+### 6. Dashboard & Analytics
+- **Key Metrics**:
+  - Total Items
+  - Low Stock Items
+  - Total Inventory Value
+- **Visual Indicators**: Color-coded stock levels (red/yellow/green)
+- **Real-time Updates**: Instant dashboard refresh
+
+### 7. E-Commerce Integration (Stubs)
+- **Shopify Connector**: Ready for integration
+- **Shopee Connector**: Ready for integration
+- **Lazada Connector**: Ready for integration
+- **Google Sheets**: Export functionality
+
+### 8. Additional Features
+- **Sortable Tables**: Click column headers to sort (ascending/descending)
+- **Search & Filters**: Find products by name, SKU, branch, type, stock level
+- **Bulk Operations**: Delete multiple items at once
+- **Data Persistence**: PostgreSQL ensures data survives system restarts
+
+---
+
+## System Architecture
+
+### High-Level Architecture
+
+```
+┌─────────────────┐      HTTP/REST API      ┌──────────────────┐
+│                 │◄─────────────────────────┤                  │
+│   React         │                          │   Flask API      │
+│   Frontend      │         JSON             │   Backend        │
+│   (Port 5000)   ├─────────────────────────►│   (Port 3000)    │
+│                 │                          │                  │
+└─────────────────┘                          └────────┬─────────┘
+                                                      │
+                                                      │ SQLAlchemy ORM
+                                                      │
+                                             ┌────────▼─────────┐
+                                             │   PostgreSQL     │
+                                             │   Database       │
+                                             └──────────────────┘
+```
+
+### Backend Architecture (`/backend`)
+
+#### Technology Stack
+- **Flask 3.0**: Python web framework
+- **SQLAlchemy**: ORM (Object-Relational Mapping)
+- **Flask-JWT-Extended**: JWT authentication
+- **Flask-CORS**: Cross-origin resource sharing
+- **Flask-Bcrypt**: Password hashing
+- **Flask-Migrate**: Database migrations
+- **Psycopg2**: PostgreSQL adapter
+
+#### Project Structure
+```
+backend/
+├── app.py                 # Main Flask application entry point
+├── config.py              # Database and app configuration
+├── models.py              # SQLAlchemy database models
+├── routes/
+│   ├── auth.py           # Authentication endpoints
+│   ├── inventory.py      # Inventory CRUD and CSV operations
+│   ├── quotes.py         # Quotation management
+│   ├── users.py          # User management (admin)
+│   ├── attendance.py     # Employee attendance & payroll
+│   └── integrations.py   # E-commerce platform connectors
+└── services/
+    ├── shopify_connector.py
+    ├── shopee_connector.py
+    ├── lazada_connector.py
+    └── google_sheets.py
+```
+
+#### API Endpoints
+
+**Authentication** (`/api/auth`)
+- `POST /login` - User login, returns JWT token
+- `POST /register` - Create new user (admin only)
+- `GET /me` - Get current user info
+
+**Inventory** (`/api/inventory`)
+- `GET /` - List all products (with filters)
+- `GET /:id` - Get single product
+- `POST /` - Create new product
+- `PUT /:id` - Update product
+- `DELETE /:id` - Delete product
+- `POST /bulk-delete` - Delete multiple products
+- `POST /import-csv` - Import products from CSV
+- `GET /export-csv` - Export products to CSV
+- `GET /dashboard-stats` - Get dashboard metrics
+- `POST /push-google-sheet` - Export to Google Sheets
+
+**Quotations** (`/api/quotes`)
+- `GET /` - List all quotations
+- `GET /:id` - Get single quotation
+- `POST /` - Create new quotation
+
+**Users** (`/api/users`)
+- `GET /` - List all users (admin only)
+- `POST /` - Create user (admin only)
+- `PUT /:id` - Update user (admin only)
+- `DELETE /:id` - Delete user (admin only)
+
+**Attendance** (`/api/attendance`)
+- `GET /employees` - List all employees
+- `POST /employees` - Create employee
+- `PUT /employees/:id` - Update employee
+- `DELETE /employees/:id` - Delete employee
+- `GET /log` - Get attendance records
+- `POST /log` - Log attendance
+- `PUT /log/:id` - Update attendance
+- `DELETE /log/:id` - Delete attendance
+- `POST /import-csv` - Import attendance from CSV
+- `GET /export-csv` - Export payroll to CSV
+- `GET /payroll-report` - Get payroll summary
+
+**Branches** (`/api/branches`)
+- `GET /` - List all branches
+
+**Integrations** (`/api/integrations`)
+- `POST /shopify/sync` - Sync with Shopify
+- `POST /shopee/sync` - Sync with Shopee
+- `POST /lazada/sync` - Sync with Lazada
+
+### Frontend Architecture (`/frontend`)
+
+#### Technology Stack
+- **React 18**: UI framework
+- **React Router**: Client-side routing
+- **Vite**: Build tool and dev server
+- **Tailwind CSS**: Utility-first CSS framework
+- **Axios**: HTTP client
+- **PapaParse**: CSV parsing library
+
+#### Project Structure
+```
+frontend/
+├── src/
+│   ├── App.jsx           # Main app component with routing
+│   ├── main.jsx          # React entry point
+│   ├── index.css         # Global styles (Tailwind)
+│   ├── api.js            # API client configuration
+│   ├── pages/
+│   │   ├── Login.jsx     # Login page
+│   │   ├── Dashboard.jsx # Dashboard with metrics
+│   │   ├── Inventory.jsx # Inventory management
+│   │   ├── Quotes.jsx    # Quotations with preview/print
+│   │   ├── Users.jsx     # User management (admin)
+│   │   └── Attendance.jsx # Employee attendance & payroll
+│   └── components/
+│       └── (reusable components)
+├── package.json
+└── vite.config.js
+```
+
+#### Routing Structure
+- `/` - Login page (public)
+- `/dashboard` - Dashboard (protected)
+- `/inventory` - Inventory management (protected)
+- `/quotes` - Quotations (protected)
+- `/users` - User management (admin only)
+- `/attendance` - Attendance tracking (protected)
+
+#### State Management
+- **React Hooks**: useState, useEffect for local state
+- **localStorage**: JWT token persistence
+- **Axios Interceptors**: Automatic token injection
+
+### Database Architecture
+
+#### PostgreSQL Configuration
+- **Connection**: Via `DATABASE_URL` environment variable
+- **Connection Pool**: 
+  - Pre-ping enabled (prevents stale connections)
+  - 5-minute recycle time
+  - Prevents SSL timeout errors
+- **Permanent Storage**: Data persists across system restarts
+
+#### Database Models
+
+**User Table**
+```sql
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(80) UNIQUE NOT NULL,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(20) NOT NULL DEFAULT 'viewer',
+    email VARCHAR(120),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Branch Table**
+```sql
+CREATE TABLE branches (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    address TEXT
+);
+```
+
+**Product Table**
+```sql
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    branch_id INTEGER REFERENCES branches(id),
+    product_type VARCHAR(100),
+    name VARCHAR(200) NOT NULL,
+    sku VARCHAR(50) NOT NULL,
+    unit_price NUMERIC(10, 2) NOT NULL,
+    current_stock INTEGER NOT NULL,
+    target_stock INTEGER DEFAULT 100,
+    status VARCHAR(20) DEFAULT 'active',
+    linked_platform_ids TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(branch_id, sku)
+);
+```
+
+**Quotation Table**
+```sql
+CREATE TABLE quotations (
+    id SERIAL PRIMARY KEY,
+    customer_name VARCHAR(200) NOT NULL,
+    email VARCHAR(120),
+    phone VARCHAR(50),
+    po_number VARCHAR(100),
+    address TEXT,
+    company_name VARCHAR(200),
+    tin VARCHAR(50),
+    items JSON NOT NULL,
+    discount_pct NUMERIC(5, 2) DEFAULT 0,
+    vat_pct NUMERIC(5, 2) DEFAULT 0,
+    shipping_fee NUMERIC(10, 2) DEFAULT 0,
+    valid_until DATE,
+    notes TEXT,
+    subtotal NUMERIC(10, 2) NOT NULL,
+    discount_amount NUMERIC(10, 2) DEFAULT 0,
+    vat_amount NUMERIC(10, 2) DEFAULT 0,
+    total NUMERIC(10, 2) NOT NULL,
+    created_by INTEGER REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Employee Table**
+```sql
+CREATE TABLE employees (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(200) NOT NULL,
+    daily_rate NUMERIC(10, 2) NOT NULL,
+    status VARCHAR(20) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+**Attendance Table**
+```sql
+CREATE TABLE attendance (
+    id SERIAL PRIMARY KEY,
+    employee_id INTEGER REFERENCES employees(id),
+    date DATE NOT NULL,
+    time_in TIME,
+    time_out TIME,
+    shift_type VARCHAR(20) DEFAULT 'Regular',
+    total_hours NUMERIC(5, 2),
+    regular_hours NUMERIC(5, 2),
+    fieldwork_hours NUMERIC(5, 2),
+    night_hours NUMERIC(5, 2),
+    daily_wage NUMERIC(10, 2),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+---
+
+## Getting Started
+
+### Prerequisites
+- Replit account (for hosting)
+- Web browser (Chrome, Firefox, Safari, Edge)
+
+### Default Credentials
+- **Username**: `admin`
+- **Password**: `admin123`
+- **Role**: Admin (full access)
+
+### First Login
+1. Access your Replit app URL
+2. Enter username: `admin`
+3. Enter password: `admin123`
+4. Click "Login"
+
+### Initial Setup
+1. **Change Admin Password** (recommended):
+   - Go to Users page
+   - Edit admin user
+   - Set new secure password
+
+2. **Create Additional Users**:
+   - Go to Users page
+   - Click "Create User"
+   - Enter username, password, select role
+   - Click "Create User"
+
+3. **Set Up Branches** (already created):
+   - Main Warehouse
+   - Estancia Mall
+   - Greenhills Mall
+
+4. **Add Products**:
+   - Go to Inventory page
+   - Click "Add Product"
+   - Or import from CSV
+
+5. **Add Employees** (for attendance tracking):
+   - Go to Attendance page
+   - Click "Add Employee"
+   - Enter name and daily rate
+
+---
+
+## User Guide
+
+### Dashboard
+The dashboard provides a quick overview of your inventory:
+- **Total Items**: Count of all products across branches
+- **Low Stock Items**: Products below 25% of target stock
+- **Total Inventory Value**: Sum of (unit price × current stock) for all products
+
+### Inventory Management
+
+#### Adding Products
+1. Click "Add Product" button
+2. Fill in required fields:
+   - Branch (select from dropdown)
+   - Product Type
+   - Product Name
+   - SKU (unique per branch)
+   - Unit Price
+   - Current Stock
+   - Target Stock
+3. Click "Add Product"
+
+#### Editing Products
+1. Click "Edit" button on any product row
+2. Modify fields as needed
+3. Click "Update Product"
+
+#### Importing Products from CSV
+1. Prepare CSV file with columns:
+   ```
+   branch,product_type,name,sku,unit_price,current_stock,target_stock
+   ```
+2. Click "Import CSV" button
+3. Select your CSV file
+4. System validates and imports products
+5. Review success/error messages
+
+#### Exporting Products
+1. Click "Export CSV" button
+2. CSV file downloads with all products
+3. Open in Excel or Google Sheets
+
+#### Searching & Filtering
+- **Search Bar**: Type to search by name or SKU
+- **Branch Filter**: Select specific branch
+- **Product Type Filter**: Select product category
+- **Stock Level Filter**: Show only Low, Medium, or High stock items
+
+#### Sorting
+- Click any column header to sort
+- Click again to reverse sort order
+- Sortable columns: Branch, Product Type, Name, SKU, Unit Price, Current Stock
+
+#### Bulk Delete
+1. Check boxes next to products to delete
+2. Click "Delete Selected" button
+3. Confirm deletion
+
+### Quotation Management
+
+#### Creating a Quotation
+1. Click "Create Quotation" button
+2. Fill in customer information:
+   - Customer Name (required)
+   - Email, Phone, Address
+   - Company Name
+   - TIN (Tax ID)
+   - PO Number
+   - Valid Until Date
+   - Notes
+3. Add items:
+   - Click "Add Item"
+   - Search for product (type name, SKU, or type)
+   - Select product from dropdown
+   - Enter quantity
+   - Click "Add to Quotation"
+   - Repeat for all items
+4. Set pricing:
+   - Discount % (if applicable)
+   - VAT % (default 0% - leave at 0 if prices include VAT)
+   - Shipping Fee
+5. Review totals:
+   - Subtotal
+   - Discount
+   - VAT
+   - Shipping Fee
+   - Total
+6. Click "Create Quotation"
+
+#### Preview & Print Quotation
+1. Go to Quotations page
+2. Click "Preview & Print" button on any quotation
+3. Preview modal shows professional quotation with:
+   - FILCON VENTURES company header
+   - Customer details
+   - Invoice # and PO #
+   - Items table
+   - Pricing breakdown
+   - Payment details (Union Bank)
+4. Click "Print" to print quotation
+5. Click "Close" to exit preview
+
+### User Management (Admin Only)
+
+#### Creating Users
+1. Go to Users page
+2. Click "Create User"
+3. Enter username (unique)
+4. Enter password
+5. Select role (Admin, Manager, or Viewer)
+6. Click "Create User"
+
+#### Editing Users
+1. Click "Edit" on user row
+2. Modify username, password, or role
+3. Click "Update User"
+
+#### Deleting Users
+1. Click "Delete" on user row
+2. Confirm deletion
+
+### Employee Attendance & Payroll
+
+#### Adding Employees
+1. Go to Attendance page
+2. Click "Employees" tab
+3. Click "Add Employee"
+4. Enter name and daily rate (e.g., 695 for ₱695/day)
+5. Click "Add Employee"
+
+#### Logging Attendance
+1. Go to "Attendance Log" tab
+2. Click "Log Attendance"
+3. Select employee
+4. Enter date
+5. Enter time in (e.g., 08:00)
+6. Enter time out (e.g., 17:00)
+7. Select shift type:
+   - **Regular**: Paid at daily rate
+   - **Field Work**: Paid hourly (daily rate ÷ 8)
+8. Click "Log Attendance"
+
+System automatically calculates:
+- Total hours worked
+- Lunch deduction (1 hour if > 4 hours)
+- Night differential (10% for 10 PM - 6 AM)
+- Daily wage
+
+#### Viewing Payroll Reports
+1. Select cutoff period:
+   - 26-10 (26th of previous month to 10th)
+   - 11-25 (11th to 25th)
+2. View attendance records
+3. See total wages per employee
+
+#### Importing Attendance from CSV
+1. Prepare CSV with columns:
+   ```
+   employee_name,date,time_in,time_out,shift_type
+   ```
+2. Click "Import CSV"
+3. Select file
+4. System processes and calculates wages
+
+#### Exporting Payroll
+1. Select date range
+2. Click "Export CSV"
+3. Download payroll report
+
+---
+
+## API Documentation
+
+### Authentication
+
+All protected endpoints require JWT token in Authorization header:
+```
+Authorization: Bearer <your_jwt_token>
+```
+
+### Common Response Codes
+- `200 OK` - Success
+- `201 Created` - Resource created
+- `400 Bad Request` - Invalid input
+- `401 Unauthorized` - Missing or invalid token
+- `403 Forbidden` - Insufficient permissions
+- `404 Not Found` - Resource not found
+- `500 Internal Server Error` - Server error
+
+### Example API Calls
+
+#### Login
+```bash
+POST /api/auth/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "admin123"
+}
+
+Response:
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbG...",
+  "user": {
+    "id": 1,
+    "username": "admin",
+    "role": "admin"
+  }
+}
+```
+
+#### Get Inventory
+```bash
+GET /api/inventory?branch=Main%20Warehouse&search=oven
+Authorization: Bearer <token>
+
+Response:
+[
+  {
+    "id": 1,
+    "branch": "Main Warehouse",
+    "product_type": "Pizza Oven",
+    "name": "Ooni Koda 2 Max",
+    "sku": "UU-P2B800",
+    "unit_price": 83999.00,
+    "current_stock": 12,
+    "target_stock": 100,
+    "stock_percentage": 12.0,
+    "stock_level": "LOW",
+    "status": "active"
+  }
+]
+```
+
+#### Create Quotation
+```bash
+POST /api/quotes
+Authorization: Bearer <token>
+Content-Type: application/json
+
+{
+  "customer_name": "John Doe",
+  "email": "john@example.com",
+  "phone": "09171234567",
+  "address": "123 Main St, Manila",
+  "company_name": "ABC Corp",
+  "tin": "123-456-789",
+  "po_number": "PO-2025-001",
+  "discount_pct": 0,
+  "vat_pct": 0,
+  "shipping_fee": 500,
+  "valid_until": "2025-10-31",
+  "notes": "VAT included in item prices",
+  "items": [
+    {"sku": "UU-P2B800", "qty": 1}
+  ]
+}
+
+Response:
+{
+  "id": 1,
+  "customer_name": "John Doe",
+  "subtotal": 83999.00,
+  "discount_amount": 0,
+  "vat_amount": 0,
+  "total": 84499.00,
+  "items": [...]
+}
+```
+
+---
+
+## Database Schema
+
+### Relationships
+```
+users
+  └─── quotations (created_by)
+
+branches
+  └─── products (branch_id)
+
+employees
+  └─── attendance (employee_id)
+```
+
+### Indexes
+- `users.username` - Unique index
+- `products.sku` - Unique index per branch
+- `products.branch_id` - Foreign key index
+- `attendance.employee_id` - Foreign key index
+- `attendance.date` - Index for date queries
+
+### Constraints
+- `products`: Unique constraint on (branch_id, sku)
+- Foreign keys enforce referential integrity
+- NOT NULL constraints on required fields
+
+---
+
+## Technical Details
+
+### Security Features
+1. **Password Hashing**: Bcrypt with salt
+2. **JWT Tokens**: 24-hour expiry
+3. **Role-Based Access**: Admin, Manager, Viewer
+4. **SQL Injection Protection**: SQLAlchemy ORM
+5. **CORS**: Configured for frontend-backend communication
+
+### Data Persistence
+- **PostgreSQL**: Permanent storage
+- **Connection Pooling**: Prevents stale connections
+- **Automatic Backups**: Via Replit database management
+- **Migration Support**: Flask-Migrate for schema changes
+
+### Performance Optimizations
+1. **Database Indexes**: Fast lookups on common queries
+2. **Connection Pooling**: Reuses database connections
+3. **React Optimization**: Functional components with hooks
+4. **Vite**: Fast hot module replacement (HMR)
+
+### CSV Processing
+- **Encoding Detection**: Tries UTF-8 → Windows-1252 → Latin-1
+- **Validation**: Checks required fields
+- **Error Reporting**: Detailed messages for failed rows
+- **Bulk Operations**: Efficient batch processing
+
+### Stock Level Calculation
+```python
+stock_percentage = (current_stock / target_stock) * 100
+
+if stock_percentage < 25:
+    stock_level = "LOW"
+elif stock_percentage < 50:
+    stock_level = "MEDIUM"
+else:
+    stock_level = "HIGH"
+```
+
+### Payroll Calculation
+```python
+# Regular Shift (Daily Rate)
+total_hours = time_out - time_in
+if total_hours > 4:
+    total_hours -= 1  # Lunch deduction
+
+daily_wage = daily_rate
+
+# Field Work (Hourly Rate)
+hourly_rate = daily_rate / 8
+daily_wage = total_hours * hourly_rate
+
+# Night Differential (10 PM - 6 AM)
+night_hours = calculate_night_hours(time_in, time_out)
+night_differential = (night_hours * hourly_rate) * 0.10
+daily_wage += night_differential
+```
+
+---
+
+## Deployment
+
+### Current Setup (Replit)
+- **Backend Workflow**: `python backend/app.py`
+- **Frontend Workflow**: `cd frontend && npm run dev`
+- **Auto-restart**: Workflows restart on code changes
+- **Environment Variables**: DATABASE_URL configured
+
+### Environment Variables Required
+```
+DATABASE_URL=postgresql://...
+PGHOST=...
+PGPORT=...
+PGDATABASE=...
+PGUSER=...
+PGPASSWORD=...
+```
+
+### For Production Deployment
+1. **Change Flask Debug Mode**:
+   ```python
+   # In backend/app.py
+   app.run(debug=False, host='0.0.0.0', port=3000)
+   ```
+
+2. **Use Production WSGI Server**:
+   ```bash
+   gunicorn --bind=0.0.0.0:3000 --workers=4 backend.app:app
+   ```
+
+3. **Build Frontend for Production**:
+   ```bash
+   cd frontend
+   npm run build
+   ```
+
+4. **Serve Static Files**: Configure Flask to serve built frontend
+
+5. **Enable HTTPS**: Use SSL certificates
+
+6. **Set Strong Passwords**: Change default admin password
+
+7. **Database Backups**: Schedule regular backups
+
+### E-Commerce Integration Setup
+
+#### Shopify
+1. Add secrets to Replit:
+   - `SHOPIFY_API_KEY`
+   - `SHOPIFY_ACCESS_TOKEN`
+   - `SHOPIFY_SHOP_URL`
+2. Implement OAuth flow in `services/shopify_connector.py`
+3. Call `POST /api/integrations/shopify/sync` to sync inventory
+
+#### Shopee
+1. Add secrets:
+   - `SHOPEE_PARTNER_ID`
+   - `SHOPEE_PARTNER_KEY`
+   - `SHOPEE_SHOP_ID`
+2. Complete connector implementation
+3. Sync via API endpoint
+
+#### Lazada
+1. Add secrets:
+   - `LAZADA_APP_KEY`
+   - `LAZADA_APP_SECRET`
+   - `LAZADA_ACCESS_TOKEN`
+2. Complete connector implementation
+3. Sync via API endpoint
+
+### Google Sheets Integration
+1. Create Google Cloud service account
+2. Generate JSON key file
+3. Add to Replit secret: `GSHEETS_SA`
+4. Share target sheet with service account email
+5. Call `POST /api/inventory/push-google-sheet`
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+**Cannot Login**
+- Check username/password
+- Verify database connection
+- Check backend logs for errors
+
+**Data Not Persisting**
+- Verify PostgreSQL is configured (not SQLite)
+- Check `DATABASE_URL` environment variable
+- Confirm database connection pool settings
+
+**CSV Import Fails**
+- Verify CSV format matches expected columns
+- Check for special characters encoding
+- Review error messages for specific rows
+
+**Quotation Print Issues**
+- Use Chrome/Firefox for best print results
+- Check print preview before printing
+- Adjust browser print settings if needed
+
+**Stock Levels Not Updating**
+- Refresh page
+- Check `current_stock` and `target_stock` values
+- Verify calculation logic in backend
+
+### Getting Help
+- Review backend logs: Check Backend workflow output
+- Review frontend logs: Check browser console (F12)
+- Database queries: Use PostgreSQL client to inspect data
+- API testing: Use Postman or curl to test endpoints
+
+---
+
+## Future Enhancements
+
+### Planned Features
+1. **PDF Quotations**: Generate downloadable PDF quotes
+2. **Email Notifications**: Send quotations via email
+3. **Inventory Alerts**: Automatic low stock notifications
+4. **Audit Logging**: Track all inventory changes
+5. **Advanced Reporting**: Sales reports, inventory turnover
+6. **Barcode Scanning**: Mobile app for stock counting
+7. **Multi-Currency**: Support for different currencies
+8. **Supplier Management**: Track suppliers and purchase orders
+9. **Production**: Complete e-commerce platform integrations
+10. **Mobile App**: Native iOS/Android applications
+
+---
+
+## Credits
+
+**Developed for**: FILCON VENTURES
+**Technology Stack**: Python, Flask, React, PostgreSQL, Tailwind CSS
+**Hosting**: Replit
+**Version**: 1.0.0
+**Last Updated**: October 16, 2025
+
+---
+
+## Quick Reference
+
+### Important URLs
+- Frontend: Port 5000
+- Backend API: Port 3000
+- Database: PostgreSQL (Replit-managed)
+
+### Default Employees
+- Matthew Campos - ₱695/day
+- Elvin Navarro - ₱695/day
+
+### Company Details
+```
+FILCON VENTURES
+G/F, AGS Building, 446, Epifanio de los Santos Ave,
+Makati, 1212 Metro Manila
+
+Bank: Union Bank
+Account No.: 0001 0002 0227
+Name: Jared L. Filart
+```
+
+### File Locations
+- Backend: `/backend`
+- Frontend: `/frontend`
+- Documentation: `/replit.md`, `/DOCUMENTATION.md`
+- Database Models: `/backend/models.py`
+- API Routes: `/backend/routes/`
