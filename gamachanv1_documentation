@@ -1,0 +1,4366 @@
+# 🐸 GAMACHAN INVENTORY MANAGEMENT SYSTEM
+## COMPLETE PROJECT DOCUMENTATION
+
+**Version**: 2.0  
+**Last Updated**: October 21, 2025  
+**Documentation Type**: Complete & Comprehensive
+
+---
+
+## 📋 TABLE OF CONTENTS
+
+### 1. [PROJECT OVERVIEW](#1-project-overview)
+   - 1.1 [Introduction](#11-introduction)
+   - 1.2 [Key Features](#12-key-features)
+   - 1.3 [Why Gamachan?](#13-why-gamachan)
+   - 1.4 [Target Users](#14-target-users)
+
+### 2. [TECHNOLOGY STACK](#2-technology-stack)
+   - 2.1 [Frontend Technologies](#21-frontend-technologies)
+   - 2.2 [Backend Technologies](#22-backend-technologies)
+   - 2.3 [Development Tools](#23-development-tools)
+   - 2.4 [Deployment Infrastructure](#24-deployment-infrastructure)
+
+### 3. [SYSTEM ARCHITECTURE](#3-system-architecture)
+   - 3.1 [Frontend Architecture](#31-frontend-architecture)
+   - 3.2 [Backend Architecture](#32-backend-architecture)
+   - 3.3 [Database Architecture](#33-database-architecture)
+   - 3.4 [Data Flow](#34-data-flow)
+   - 3.5 [Authentication Flow](#35-authentication-flow)
+
+### 4. [INSTALLATION & SETUP](#4-installation--setup)
+   - 4.1 [Prerequisites](#41-prerequisites)
+   - 4.2 [Local Development Setup](#42-local-development-setup)
+   - 4.3 [Firebase Configuration](#43-firebase-configuration)
+   - 4.4 [Environment Variables](#44-environment-variables)
+   - 4.5 [First User Setup](#45-first-user-setup)
+
+### 5. [DATA MODELS & SCHEMAS](#5-data-models--schemas)
+   - 5.1 [User Schema](#51-user-schema)
+   - 5.2 [Inventory Item Schema](#52-inventory-item-schema)
+   - 5.3 [Quotation Schema](#53-quotation-schema)
+   - 5.4 [Quotation Item Schema](#54-quotation-item-schema)
+   - 5.5 [Audit Log Schema](#55-audit-log-schema)
+   - 5.6 [CSV Row Schema](#56-csv-row-schema)
+   - 5.7 [Helper Functions](#57-helper-functions)
+
+### 6. [API ROUTES & ENDPOINTS](#6-api-routes--endpoints)
+   - 6.1 [REST API Endpoints](#61-rest-api-endpoints)
+   - 6.2 [Firebase Realtime Database Paths](#62-firebase-realtime-database-paths)
+   - 6.3 [Authentication Endpoints](#63-authentication-endpoints)
+
+### 7. [FRONTEND ARCHITECTURE](#7-frontend-architecture)
+   - 7.1 [Pages](#71-pages)
+   - 7.2 [Components](#72-components)
+   - 7.3 [Hooks](#73-hooks)
+   - 7.4 [Contexts](#74-contexts)
+   - 7.5 [Routing](#75-routing)
+
+### 8. [USER ROLES & PERMISSIONS](#8-user-roles--permissions)
+   - 8.1 [Staff Role](#81-staff-role)
+   - 8.2 [Admin Role](#82-admin-role)
+   - 8.3 [SuperAdmin Role](#83-superadmin-role)
+   - 8.4 [Permission Matrix](#84-permission-matrix)
+
+### 9. [CORE FEATURES](#9-core-features)
+   - 9.1 [Inventory Management](#91-inventory-management)
+   - 9.2 [Dynamic Stock Thresholds](#92-dynamic-stock-thresholds)
+   - 9.3 [Multi-Branch Operations](#93-multi-branch-operations)
+   - 9.4 [Quotation System](#94-quotation-system)
+   - 9.5 [Analytics & Dashboard](#95-analytics--dashboard)
+   - 9.6 [CSV Import/Export](#96-csv-importexport)
+   - 9.7 [Audit Logging](#97-audit-logging)
+   - 9.8 [User Management](#98-user-management)
+
+### 10. [USER GUIDES](#10-user-guides)
+   - 10.1 [Getting Started](#101-getting-started)
+   - 10.2 [Daily Operations](#102-daily-operations)
+   - 10.3 [Managing Inventory](#103-managing-inventory)
+   - 10.4 [Creating Quotations](#104-creating-quotations)
+   - 10.5 [Importing/Exporting Data](#105-importingexporting-data)
+   - 10.6 [Understanding Stock Levels](#106-understanding-stock-levels)
+
+### 11. [DEVELOPER GUIDE](#11-developer-guide)
+   - 11.1 [Project Structure](#111-project-structure)
+   - 11.2 [Development Guidelines](#112-development-guidelines)
+   - 11.3 [Code Style](#113-code-style)
+   - 11.4 [State Management](#114-state-management)
+   - 11.5 [Adding Features](#115-adding-features)
+   - 11.6 [Testing](#116-testing)
+
+### 12. [DEPLOYMENT](#12-deployment)
+   - 12.1 [Replit Deployment](#121-replit-deployment)
+   - 12.2 [Production Setup](#122-production-setup)
+   - 12.3 [Security Considerations](#123-security-considerations)
+   - 12.4 [Environment Configuration](#124-environment-configuration)
+
+### 13. [TROUBLESHOOTING](#13-troubleshooting)
+   - 13.1 [Common Issues](#131-common-issues)
+   - 13.2 [Firebase Issues](#132-firebase-issues)
+   - 13.3 [Performance Issues](#133-performance-issues)
+   - 13.4 [CSV Import Issues](#134-csv-import-issues)
+
+### 14. [CHANGELOG](#14-changelog)
+   - 14.1 [October 2025 - Dynamic Thresholds](#141-october-2025---dynamic-thresholds)
+   - 14.2 [August 2025 - Interface Simplification](#142-august-2025---interface-simplification)
+   - 14.3 [August 2025 - Quotation System](#143-august-2025---quotation-system)
+   - 14.4 [June 2025 - Initial Release](#144-june-2025---initial-release)
+
+### 15. [APPENDIX](#15-appendix)
+   - 15.1 [File Structure Reference](#151-file-structure-reference)
+   - 15.2 [Component Reference](#152-component-reference)
+   - 15.3 [Keyboard Shortcuts](#153-keyboard-shortcuts)
+   - 15.4 [Resources](#154-resources)
+
+---
+
+## 1. PROJECT OVERVIEW
+
+### 1.1 Introduction
+
+**Gamachan Inventory Management System** is a comprehensive, real-time inventory management solution designed specifically for businesses operating across multiple branch locations. Built with modern web technologies, it provides warehouse teams with a simplified interface while giving management powerful analytics, quotation tools, and comprehensive audit trails.
+
+The system was created to address the challenges faced by multi-branch retail and distribution businesses:
+- Real-time inventory synchronization across locations
+- Simplified stock tracking for warehouse personnel
+- Professional quotation generation
+- Complete audit trail for compliance
+- Role-based access control for team members
+
+**Project Name Origin**: "Gamachan" (🐸) - represents reliability, adaptability, and continuous evolution
+
+### 1.2 Key Features
+
+#### 📦 Inventory Management
+- **Dynamic Stock Thresholds**: Per-product customization of low (25%), medium (50%), and high stock levels based on target stock
+- **Multi-Branch Support**: Manage inventory across three locations (Main Warehouse, Estancia, Greenhills)
+- **Real-Time Updates**: Instant synchronization across all connected clients using Firebase
+- **CSV Import/Export**: Bulk operations with comprehensive error handling and validation
+- **SKU-Based Tracking**: Unique product identification across all branches
+- **Simplified Interface**: Single "Current Stock" field instead of complex multi-column tracking
+
+#### 👥 User Management
+- **Role-Based Access Control**: Three-tier permission system (Staff, Admin, SuperAdmin)
+- **Firebase Authentication**: Secure email/password authentication
+- **Activity Logging**: Complete audit trail of all user actions
+- **Super Admin Bypass**: Development-only bypass for testing
+- **User Creation**: Hierarchical user creation based on roles
+
+#### 📊 Analytics & Reporting
+- **Real-Time Dashboard**: KPIs for total items, low stock alerts, branch counts, and inventory value
+- **Visual Charts**: Stock distribution and flow analysis using Recharts
+- **Custom Filtering**: Filter by branch, product type, stock level, and search terms
+- **Export Capabilities**: Generate CSV reports for external analysis
+- **Dynamic Metrics**: Real-time calculation of inventory value and stock status
+
+#### 💼 Quotation System
+- **Professional Quotations**: Digital quotation creation with automatic numbering
+- **Customer Management**: Track customer information, PO numbers, and contact details
+- **Financial Calculations**: Automatic subtotal, discount, VAT, and total calculations
+- **Status Tracking**: Draft, Sent, Accepted, Rejected, Expired status workflow
+- **PDF Generation**: Export quotations as professional PDFs
+- **Inventory Integration**: Select items directly from inventory with auto-filled pricing
+
+#### 🔍 Audit & Compliance
+- **Complete Audit Logs**: Track all create, update, delete, and import operations
+- **User Attribution**: Every change records who made it and when
+- **Change History**: Old and new values stored for all modifications
+- **Searchable Logs**: Filter and search through historical changes
+
+### 1.3 Why Gamachan?
+
+**For Warehouse Teams:**
+- Simple, single-field stock tracking
+- Visual color-coded stock level indicators
+- Quick product lookup by SKU or name
+- Mobile-responsive interface for floor use
+
+**For Management:**
+- Real-time visibility across all branches
+- Professional quotation generation
+- Comprehensive analytics and reports
+- Complete audit trail for compliance
+
+**For IT Teams:**
+- Modern, maintainable codebase
+- Type-safe TypeScript throughout
+- Real-time Firebase integration
+- Easy deployment on Replit
+
+### 1.4 Target Users
+
+**Primary Users:**
+- Multi-branch retail businesses
+- Distribution companies
+- Wholesale operations
+- E-commerce businesses with warehouses
+
+**User Personas:**
+1. **Warehouse Staff**: Daily stock updates and lookups
+2. **Operations Managers**: Inventory oversight and quotations
+3. **Business Owners**: Analytics and strategic planning
+4. **System Administrators**: User management and configuration
+
+---
+
+## 2. TECHNOLOGY STACK
+
+### 2.1 Frontend Technologies
+
+#### Core Framework
+- **React 18.3**: Modern React with hooks and concurrent features
+- **TypeScript 5.6**: Type-safe JavaScript for better developer experience
+- **Vite 5.4**: Lightning-fast build tool with HMR (Hot Module Replacement)
+
+#### UI & Styling
+- **Tailwind CSS 3.4**: Utility-first CSS framework
+- **Radix UI**: Accessible, unstyled UI primitives
+- **shadcn/ui**: Beautiful, customizable component library
+- **Lucide React**: Modern icon library
+- **React Icons**: Company logos and additional icons
+- **Framer Motion**: Smooth animations
+
+#### State Management
+- **TanStack React Query v5**: Server state management
+- **React Context**: Authentication and global state
+- **React Hook Form**: Form state management
+- **Zod**: Runtime schema validation
+
+#### Data Visualization
+- **Recharts**: Responsive chart library
+- **Custom Analytics Components**: Tailored for inventory data
+
+#### Routing
+- **Wouter**: Lightweight client-side routing (< 1.5KB)
+
+### 2.2 Backend Technologies
+
+#### Runtime & Framework
+- **Node.js 20**: Latest LTS version
+- **Express.js 4.21**: Minimal web framework
+- **TypeScript 5.6**: ES modules with strict mode
+
+#### Database
+- **Firebase Realtime Database**: Primary database for all operations
+  - Real-time synchronization
+  - Offline persistence
+  - Automatic data sync
+- **Neon PostgreSQL**: Configured for future use
+  - Serverless PostgreSQL
+  - Available via DATABASE_URL
+  - Drizzle ORM configured
+
+#### Authentication
+- **Firebase Auth 11.9**: User authentication
+  - Email/password authentication
+  - Session management
+  - User data overlay
+
+#### ORM & Schema
+- **Drizzle ORM 0.39**: Type-safe SQL ORM (configured)
+- **Drizzle Kit**: Schema migrations
+- **Zod**: Schema validation
+
+### 2.3 Development Tools
+
+#### Type Safety
+- **TypeScript**: Strict mode enabled
+- **ESLint**: Code quality
+- **Prettier**: Code formatting (configured)
+
+#### Build Tools
+- **Vite**: Development server and build tool
+- **ESBuild**: Production bundling
+- **PostCSS**: CSS processing
+- **Autoprefixer**: CSS vendor prefixes
+
+#### Package Management
+- **npm**: Dependency management
+- **package.json**: 50+ dependencies managed
+
+### 2.4 Deployment Infrastructure
+
+#### Platform
+- **Replit**: Primary deployment platform
+  - Autoscale deployment
+  - Built-in secrets management
+  - Automatic HTTPS
+
+#### Configuration
+- **Port**: 5000 (unified frontend + backend)
+- **Environment**: Node.js 20 runtime
+- **Build Process**: Optimized production builds
+
+---
+
+## 3. SYSTEM ARCHITECTURE
+
+### 3.1 Frontend Architecture
+
+```
+client/
+├── src/
+│   ├── components/              # React Components
+│   │   ├── ui/                 # Base UI Components (shadcn/ui)
+│   │   │   ├── button.tsx
+│   │   │   ├── card.tsx
+│   │   │   ├── dialog.tsx
+│   │   │   ├── form.tsx
+│   │   │   ├── input.tsx
+│   │   │   ├── select.tsx
+│   │   │   ├── table.tsx
+│   │   │   └── ... (30+ components)
+│   │   │
+│   │   ├── AddItemModal.tsx    # Add inventory item
+│   │   ├── EditItemModal.tsx   # Edit inventory item
+│   │   ├── AnalyticsCharts.tsx # Data visualization
+│   │   ├── AuditLogs.tsx       # Audit trail display
+│   │   ├── BranchTabs.tsx      # Branch filtering
+│   │   ├── CreateQuotationModal.tsx
+│   │   ├── CSVImportExport.tsx # CSV operations
+│   │   ├── Dashboard.tsx       # KPI dashboard
+│   │   ├── InventoryTable.tsx  # Main inventory table
+│   │   ├── Layout.tsx          # App layout wrapper
+│   │   ├── QuotationManager.tsx
+│   │   ├── SearchFilters.tsx   # Filter controls
+│   │   ├── StockBadge.tsx      # Stock level indicator
+│   │   ├── UserManagement.tsx  # User admin
+│   │   └── ViewQuotationModal.tsx
+│   │
+│   ├── contexts/               # React Context Providers
+│   │   └── AuthContext.tsx    # Authentication context
+│   │
+│   ├── hooks/                  # Custom React Hooks
+│   │   ├── useAuth.ts         # Authentication hook
+│   │   ├── useInventory.ts    # Inventory operations
+│   │   ├── useQuotations.ts   # Quotation operations
+│   │   └── use-toast.ts       # Toast notifications
+│   │
+│   ├── lib/                    # Utility Libraries
+│   │   ├── firebase.ts        # Firebase config
+│   │   ├── queryClient.ts     # React Query setup
+│   │   └── utils.ts           # Helper functions
+│   │
+│   ├── pages/                  # Route Components
+│   │   ├── HomePage.tsx       # Main application
+│   │   ├── LoginPage.tsx      # Authentication
+│   │   └── not-found.tsx      # 404 page
+│   │
+│   ├── App.tsx                 # Router setup
+│   ├── main.tsx               # Application entry
+│   └── index.css              # Global styles
+```
+
+**Component Hierarchy:**
+```
+App (Router)
+├── LoginPage (Unauthenticated)
+└── HomePage (Authenticated)
+    └── Layout
+        ├── Navigation Bar
+        ├── Sidebar Menu
+        └── Content Area
+            ├── Dashboard Tab
+            ├── Inventory Tab
+            ├── Quotations Tab
+            ├── Analytics Tab
+            ├── Import/Export Tab
+            ├── Audit Logs Tab
+            └── User Management Tab (Admin+)
+```
+
+### 3.2 Backend Architecture
+
+```
+server/
+├── index.ts          # Express server setup
+│   ├── Middleware configuration
+│   ├── Route registration
+│   ├── Vite dev server (development)
+│   ├── Static file serving (production)
+│   └── Error handling
+│
+├── routes.ts         # API route definitions
+│   └── GET /api/products (with API key)
+│
+├── storage.ts        # Storage interface (for future use)
+│   └── IStorage interface
+│
+└── vite.ts          # Vite development server
+    └── Dev server configuration
+```
+
+**Server Flow:**
+```
+Request → Express Middleware → Route Handler → Firebase → Response
+```
+
+### 3.3 Database Architecture
+
+#### Firebase Realtime Database Structure
+```
+gamachan-project/
+├── users/
+│   └── {userId}/
+│       ├── id: string
+│       ├── username: string
+│       ├── email?: string
+│       ├── role: 'staff' | 'admin' | 'superadmin'
+│       ├── isActive: boolean
+│       ├── createdAt: number
+│       └── updatedAt: number
+│
+├── inventory/
+│   └── {itemId}/
+│       ├── id: string
+│       ├── branch: 'main_warehouse' | 'estancia' | 'greenhills'
+│       ├── productType: string
+│       ├── productName: string
+│       ├── sku: string
+│       ├── unitPrice: number
+│       ├── currentStock: number
+│       ├── targetStockLevel: number (default: 100)
+│       ├── lowThreshold: number (default: 25)
+│       ├── mediumThreshold: number (default: 50)
+│       ├── createdAt: number
+│       ├── updatedAt: number
+│       ├── createdBy: string
+│       └── updatedBy: string
+│
+├── quotations/
+│   └── {quotationId}/
+│       ├── id: string
+│       ├── quotationNumber: string
+│       ├── customerName: string
+│       ├── customerEmail?: string
+│       ├── customerPhone?: string
+│       ├── customerAddress?: string
+│       ├── poNumber?: string
+│       ├── dueDate?: string
+│       ├── subtotal: number
+│       ├── discountPercent: number
+│       ├── discountAmount: number
+│       ├── vatPercent: number
+│       ├── vatAmount: number
+│       ├── totalAmount: number
+│       ├── status: string
+│       ├── validUntil?: string
+│       ├── notes?: string
+│       ├── createdAt: number
+│       ├── updatedAt: number
+│       ├── createdBy: string
+│       └── updatedBy: string
+│
+├── quotationItems/
+│   └── {quotationId}/
+│       └── {itemId}/
+│           ├── id: string
+│           ├── quotationId: string
+│           ├── inventoryItemId?: string
+│           ├── description: string
+│           ├── quantity: number
+│           ├── unitPrice: number
+│           └── totalPrice: number
+│
+└── auditLogs/
+    └── {logId}/
+        ├── id: string
+        ├── inventoryId: string
+        ├── userId: string
+        ├── action: 'create' | 'update' | 'delete' | 'import'
+        ├── oldValues?: object
+        ├── newValues?: object
+        ├── timestamp: number
+        └── details?: string
+```
+
+#### PostgreSQL (Configured, Not Active)
+- Neon Serverless PostgreSQL available
+- Drizzle ORM schema defined
+- Can be activated for future features
+
+### 3.4 Data Flow
+
+#### Inventory Operations Flow
+```
+1. User Action (Create/Update/Delete)
+   ↓
+2. Frontend Validation (Zod Schema)
+   ↓
+3. Firebase Realtime Database Write
+   ↓
+4. Real-time Listener Update
+   ↓
+5. All Connected Clients Sync
+   ↓
+6. Audit Log Creation
+```
+
+#### Authentication Flow
+```
+1. User Submits Credentials
+   ↓
+2. Firebase Auth Validation
+   ↓
+3. Retrieve Custom User Data from Realtime DB
+   ↓
+4. Establish User Session
+   ↓
+5. Role-Based UI Rendering
+```
+
+#### CSV Import Flow
+```
+1. User Selects CSV File
+   ↓
+2. Frontend CSV Parsing
+   ↓
+3. Zod Schema Validation
+   ↓
+4. Batch Firebase Writes
+   ↓
+5. Progress Feedback to User
+   ↓
+6. Audit Log Batch Creation
+```
+
+### 3.5 Authentication Flow
+
+```
+┌─────────────┐
+│  LoginPage  │
+└──────┬──────┘
+       │
+       ▼
+┌─────────────────────┐
+│  Firebase Auth      │
+│  Email/Password     │
+└──────┬──────────────┘
+       │
+       ▼
+┌─────────────────────┐
+│  Check User in      │
+│  Realtime DB        │
+└──────┬──────────────┘
+       │
+       ├──── New User? ──┐
+       │                 ▼
+       │         ┌───────────────┐
+       │         │ Create User   │
+       │         │ First = Super │
+       │         └───────┬───────┘
+       │                 │
+       ▼                 ▼
+┌─────────────────────────────┐
+│   Load User Data            │
+│   - Role                    │
+│   - Permissions             │
+│   - Settings                │
+└──────┬──────────────────────┘
+       │
+       ▼
+┌─────────────────────────────┐
+│   AuthContext Provider      │
+│   - currentUser             │
+│   - login/logout            │
+│   - createUser              │
+└──────┬──────────────────────┘
+       │
+       ▼
+┌─────────────────────────────┐
+│   Protected Routes          │
+│   - Role-based rendering    │
+│   - Permission checks       │
+└─────────────────────────────┘
+```
+
+---
+
+## 4. INSTALLATION & SETUP
+
+### 4.1 Prerequisites
+
+**Required Software:**
+- Node.js 18 or higher
+- npm 8 or higher
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Firebase account (free tier available)
+
+**Optional:**
+- Git for version control
+- Code editor (VS Code recommended)
+- Neon PostgreSQL account (for future features)
+
+### 4.2 Local Development Setup
+
+#### Step 1: Clone Repository
+```bash
+git clone <repository-url>
+cd gamachan-inventory
+```
+
+#### Step 2: Install Dependencies
+```bash
+npm install
+```
+
+This installs 50+ packages including:
+- React ecosystem
+- Firebase SDK
+- UI component libraries
+- Development tools
+
+#### Step 3: Configure Environment
+Create `.env` file in root directory:
+```bash
+touch .env
+```
+
+#### Step 4: Add Firebase Configuration
+See section 4.3 for Firebase setup details.
+
+#### Step 5: Start Development Server
+```bash
+npm run dev
+```
+
+Application runs on: `http://localhost:5000`
+
+### 4.3 Firebase Configuration
+
+#### Creating Firebase Project
+
+1. **Go to Firebase Console**
+   - Visit: https://console.firebase.google.com/
+   - Click "Add Project" or select existing project
+
+2. **Enable Realtime Database**
+   - Navigate to "Build" → "Realtime Database"
+   - Click "Create Database"
+   - Select region closest to your users
+   - Start in "Test Mode" (remember to secure later)
+
+3. **Enable Authentication**
+   - Navigate to "Build" → "Authentication"
+   - Click "Get Started"
+   - Enable "Email/Password" provider
+
+4. **Get Configuration Values**
+   - Go to Project Settings (gear icon)
+   - Scroll to "Your apps"
+   - Select or create a Web app
+   - Copy configuration values
+
+#### Firebase Security Rules
+
+**Development Rules (TEMPORARY):**
+```json
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}
+```
+
+**Production Rules (RECOMMENDED):**
+```json
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'superadmin'"
+      }
+    },
+    "inventory": {
+      ".read": "auth != null",
+      "$itemId": {
+        ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'superadmin'"
+      }
+    },
+    "quotations": {
+      ".read": "auth != null",
+      ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'superadmin'"
+    },
+    "auditLogs": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    }
+  }
+}
+```
+
+### 4.4 Environment Variables
+
+#### Required Variables
+```env
+# Firebase Configuration
+VITE_FIREBASE_API_KEY=your_api_key_here
+VITE_FIREBASE_PROJECT_ID=your_project_id_here
+VITE_FIREBASE_APP_ID=your_app_id_here
+```
+
+#### Optional Variables
+```env
+# PostgreSQL (for future features)
+DATABASE_URL=postgresql://user:password@host/database
+
+# Development Settings
+NODE_ENV=development
+```
+
+#### Getting Firebase Values
+
+From Firebase Console → Project Settings:
+- **API Key**: Web API Key
+- **Project ID**: Project ID
+- **App ID**: App ID from your web app
+
+**Example:**
+```env
+VITE_FIREBASE_API_KEY=AIzaSyDxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+VITE_FIREBASE_PROJECT_ID=gamachan-inventory-12345
+VITE_FIREBASE_APP_ID=1:123456789012:web:abcdef1234567890
+```
+
+### 4.5 First User Setup
+
+#### Automatic SuperAdmin Creation
+
+**First User Becomes SuperAdmin:**
+When no users exist in the system, the first registered user automatically receives SuperAdmin role.
+
+**Steps:**
+1. Start the application: `npm run dev`
+2. Navigate to login page
+3. Click "Create Account" tab
+4. Fill in user details:
+   - Username (minimum 3 characters)
+   - Email (optional but recommended)
+   - Password (secure password)
+   - Role will be automatically set to SuperAdmin
+5. Click "Create Account"
+6. You're logged in with full system access
+
+#### Super Admin Bypass (Development Only)
+
+**URL Parameter Bypass:**
+```
+http://localhost:5000?super_admin_key=gamachan_super_override_2024
+```
+
+**⚠️ CRITICAL SECURITY WARNING:**
+- This bypass is for **DEVELOPMENT ONLY**
+- **MUST BE REMOVED** before production deployment
+- Located in: `client/src/contexts/AuthContext.tsx`
+- Remove or comment out `checkSuperAdminBypass()` function
+
+#### Creating Additional Users
+
+After first SuperAdmin is created:
+1. Login as SuperAdmin
+2. Navigate to "User Management" tab
+3. Click "Create New User"
+4. Select role (Staff, Admin, SuperAdmin)
+5. Fill in user details
+6. User can now login with their credentials
+
+---
+
+## 5. DATA MODELS & SCHEMAS
+
+All data models are defined in `shared/schema.ts` using Zod for runtime validation.
+
+### 5.1 User Schema
+
+#### TypeScript Interface
+```typescript
+interface User {
+  id: string;                    // Firebase Auth UID
+  username: string;              // 3-50 characters
+  email?: string;                // Optional email
+  role: UserRoleType;           // 'staff' | 'admin' | 'superadmin'
+  isActive: boolean;            // Account active status
+  createdAt: number;            // Unix timestamp
+  updatedAt: number;            // Unix timestamp
+}
+
+type UserRoleType = 'staff' | 'admin' | 'superadmin';
+```
+
+#### Zod Schema
+```typescript
+export const userSchema = z.object({
+  id: z.string(),
+  username: z.string().min(3).max(50),
+  email: z.string().email().optional(),
+  role: z.enum([UserRole.STAFF, UserRole.ADMIN, UserRole.SUPERADMIN]),
+  isActive: z.boolean().default(true),
+  createdAt: z.number(),
+  updatedAt: z.number()
+});
+
+export const insertUserSchema = userSchema.omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true 
+});
+
+export type User = z.infer<typeof userSchema>;
+export type InsertUser = z.infer<typeof insertUserSchema>;
+```
+
+#### User Roles
+```typescript
+export const UserRole = {
+  STAFF: 'staff',
+  ADMIN: 'admin',
+  SUPERADMIN: 'superadmin'
+} as const;
+```
+
+### 5.2 Inventory Item Schema
+
+#### TypeScript Interface
+```typescript
+interface InventoryItem {
+  id: string;                    // Auto-generated
+  branch: BranchType;            // Branch location
+  productType: string;           // Product category
+  productName: string;           // Product name
+  sku: string;                   // Stock Keeping Unit (unique)
+  unitPrice: number;             // Price per unit (≥ 0)
+  currentStock: number;          // Current quantity (≥ 0)
+  targetStockLevel: number;      // Target quantity (default: 100)
+  lowThreshold: number;          // Low % threshold (default: 25)
+  mediumThreshold: number;       // Medium % threshold (default: 50)
+  createdAt: number;             // Unix timestamp
+  updatedAt: number;             // Unix timestamp
+  createdBy: string;             // User ID
+  updatedBy: string;             // User ID
+}
+
+type BranchType = 'main_warehouse' | 'estancia' | 'greenhills';
+```
+
+#### Zod Schema
+```typescript
+export const inventoryItemSchema = z.object({
+  id: z.string(),
+  branch: z.enum([Branch.MAIN_WAREHOUSE, Branch.ESTANCIA, Branch.GREENHILLS]),
+  productType: z.string().min(1),
+  productName: z.string().min(1),
+  sku: z.string().min(1),
+  unitPrice: z.number().min(0).default(0),
+  currentStock: z.number().min(0).default(0),
+  targetStockLevel: z.number().min(0).default(100),
+  lowThreshold: z.number().min(0).max(100).default(25),
+  mediumThreshold: z.number().min(0).max(100).default(50),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  createdBy: z.string(),
+  updatedBy: z.string()
+});
+
+export const insertInventoryItemSchema = inventoryItemSchema.omit({ 
+  id: true, 
+  createdAt: true, 
+  updatedAt: true 
+});
+
+export const updateInventoryItemSchema = insertInventoryItemSchema.partial().extend({
+  id: z.string()
+});
+
+export type InventoryItem = z.infer<typeof inventoryItemSchema>;
+export type InsertInventoryItem = z.infer<typeof insertInventoryItemSchema>;
+export type UpdateInventoryItem = z.infer<typeof updateInventoryItemSchema>;
+```
+
+#### Branch Definitions
+```typescript
+export const Branch = {
+  MAIN_WAREHOUSE: 'main_warehouse',
+  ESTANCIA: 'estancia',
+  GREENHILLS: 'greenhills'
+} as const;
+
+export const getBranchDisplayName = (branch: BranchType): string => {
+  const names = {
+    main_warehouse: 'Main Warehouse',
+    estancia: 'Estancia',
+    greenhills: 'Greenhills'
+  };
+  return names[branch] || branch;
+};
+```
+
+### 5.3 Quotation Schema
+
+#### TypeScript Interface
+```typescript
+interface Quotation {
+  id: string;
+  quotationNumber: string;       // Auto-generated (QUO-YYYYMMDD-XXXX)
+  customerName: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  customerAddress?: string;
+  poNumber?: string;             // Purchase Order number
+  dueDate?: string;              // Due date
+  subtotal: number;              // Sum of line items
+  discountPercent: number;       // 0-100%
+  discountAmount: number;        // Calculated
+  vatPercent: number;            // Default 12%
+  vatAmount: number;             // Calculated
+  totalAmount: number;           // Final total
+  status: QuotationStatus;       // Workflow status
+  validUntil?: string;           // Expiration date
+  notes?: string;                // Terms and conditions
+  createdAt: number;
+  updatedAt: number;
+  createdBy: string;
+  updatedBy: string;
+}
+
+type QuotationStatus = 'draft' | 'sent' | 'accepted' | 'rejected' | 'expired';
+```
+
+#### Zod Schema
+```typescript
+export const quotationSchema = z.object({
+  id: z.string(),
+  quotationNumber: z.string(),
+  customerName: z.string().min(1),
+  customerEmail: z.string().email().optional(),
+  customerPhone: z.string().optional(),
+  customerAddress: z.string().optional(),
+  poNumber: z.string().optional(),
+  dueDate: z.string().optional(),
+  subtotal: z.number().min(0),
+  discountPercent: z.number().min(0).max(100).default(0),
+  discountAmount: z.number().min(0).default(0),
+  vatPercent: z.number().min(0).max(100).default(12),
+  vatAmount: z.number().min(0).default(0),
+  totalAmount: z.number().min(0),
+  status: z.enum(['draft', 'sent', 'accepted', 'rejected', 'expired']).default('draft'),
+  validUntil: z.string().optional(),
+  notes: z.string().optional(),
+  createdAt: z.number(),
+  updatedAt: z.number(),
+  createdBy: z.string(),
+  updatedBy: z.string()
+});
+
+export type Quotation = z.infer<typeof quotationSchema>;
+```
+
+### 5.4 Quotation Item Schema
+
+#### TypeScript Interface
+```typescript
+interface QuotationItem {
+  id: string;
+  quotationId: string;           // Parent quotation
+  inventoryItemId?: string;      // Optional link to inventory
+  description: string;           // Item description
+  quantity: number;              // Quantity (≥ 1)
+  unitPrice: number;             // Price per unit (≥ 0)
+  totalPrice: number;            // quantity × unitPrice
+}
+```
+
+#### Zod Schema
+```typescript
+export const quotationItemSchema = z.object({
+  id: z.string(),
+  quotationId: z.string(),
+  inventoryItemId: z.string().optional(),
+  description: z.string().min(1),
+  quantity: z.number().min(1),
+  unitPrice: z.number().min(0),
+  totalPrice: z.number().min(0)
+});
+
+export type QuotationItem = z.infer<typeof quotationItemSchema>;
+```
+
+### 5.5 Audit Log Schema
+
+#### TypeScript Interface
+```typescript
+interface AuditLog {
+  id: string;
+  inventoryId: string;           // Related inventory item
+  userId: string;                // User who made change
+  action: AuditAction;           // Type of action
+  oldValues?: Record<string, any>;  // Previous values
+  newValues?: Record<string, any>;  // New values
+  timestamp: number;             // When it happened
+  details?: string;              // Additional context
+}
+
+type AuditAction = 'create' | 'update' | 'delete' | 'import';
+```
+
+#### Zod Schema
+```typescript
+export const auditLogSchema = z.object({
+  id: z.string(),
+  inventoryId: z.string(),
+  userId: z.string(),
+  action: z.enum(['create', 'update', 'delete', 'import']),
+  oldValues: z.record(z.any()).optional(),
+  newValues: z.record(z.any()).optional(),
+  timestamp: z.number(),
+  details: z.string().optional()
+});
+
+export type AuditLog = z.infer<typeof auditLogSchema>;
+```
+
+### 5.6 CSV Row Schema
+
+#### TypeScript Interface
+```typescript
+interface CSVRow {
+  Branch: string;
+  'Product Type': string;
+  'Product Name': string;
+  SKU: string;
+  'Unit Price': number;          // Transformed from string
+  'Current Stock': number;       // Transformed from string
+  'Target Stock Level'?: number; // Optional
+  'Low Threshold %'?: number;    // Optional
+  'Medium Threshold %'?: number; // Optional
+}
+```
+
+#### Zod Schema
+```typescript
+export const csvRowSchema = z.object({
+  Branch: z.string(),
+  'Product Type': z.string(),
+  'Product Name': z.string(),
+  SKU: z.string(),
+  'Unit Price': z.string().transform(val => parseFloat(val) || 0),
+  'Current Stock': z.string().transform(val => parseInt(val) || 0),
+  'Target Stock Level': z.string().transform(val => parseInt(val) || 100).optional(),
+  'Low Threshold %': z.string().transform(val => parseInt(val) || 25).optional(),
+  'Medium Threshold %': z.string().transform(val => parseInt(val) || 50).optional()
+});
+
+export type CSVRow = z.infer<typeof csvRowSchema>;
+```
+
+### 5.7 Helper Functions
+
+#### getStockLevel Function
+
+**Purpose**: Calculate stock level status based on dynamic thresholds
+
+**Signature:**
+```typescript
+getStockLevel(
+  currentStock: number,
+  targetStockLevel: number,
+  lowThreshold: number,
+  mediumThreshold: number
+): 'high' | 'medium' | 'low'
+```
+
+**Implementation:**
+```typescript
+export const getStockLevel = (
+  currentStock: number, 
+  targetStockLevel: number, 
+  lowThreshold: number, 
+  mediumThreshold: number
+): 'high' | 'medium' | 'low' => {
+  const percentage = (currentStock / targetStockLevel) * 100;
+  
+  if (percentage >= mediumThreshold) return 'high';
+  if (percentage >= lowThreshold) return 'medium';
+  return 'low';
+};
+```
+
+**Usage Examples:**
+```typescript
+// Example 1: Low stock
+getStockLevel(20, 100, 25, 50);  // Returns: 'low' (20%)
+
+// Example 2: Medium stock
+getStockLevel(35, 100, 25, 50);  // Returns: 'medium' (35%)
+
+// Example 3: High stock
+getStockLevel(75, 100, 25, 50);  // Returns: 'high' (75%)
+
+// Example 4: Custom thresholds
+getStockLevel(150, 200, 30, 60); // Returns: 'high' (75%)
+```
+
+**Algorithm:**
+```
+percentage = (current_stock / target_stock_level) × 100
+
+if percentage >= medium_threshold:
+  return 'high'
+else if percentage >= low_threshold:
+  return 'medium'
+else:
+  return 'low'
+```
+
+#### getBranchDisplayName Function
+
+**Purpose**: Convert branch code to display name
+
+**Implementation:**
+```typescript
+export const getBranchDisplayName = (branch: BranchType): string => {
+  const names = {
+    main_warehouse: 'Main Warehouse',
+    estancia: 'Estancia',
+    greenhills: 'Greenhills'
+  };
+  return names[branch] || branch;
+};
+```
+
+**Usage:**
+```typescript
+getBranchDisplayName('main_warehouse'); // Returns: "Main Warehouse"
+getBranchDisplayName('estancia');       // Returns: "Estancia"
+getBranchDisplayName('greenhills');     // Returns: "Greenhills"
+```
+
+---
+
+## 6. API ROUTES & ENDPOINTS
+
+### 6.1 REST API Endpoints
+
+#### GET /api/products
+
+**Description**: Retrieve all products from inventory
+
+**Authentication**: API Key required
+
+**Request:**
+```http
+GET /api/products HTTP/1.1
+Host: localhost:5000
+X-API-Key: your_api_key_here
+```
+
+**Response:**
+```json
+[
+  {
+    "id": "abc123",
+    "name": "Laptop Stand",
+    "sku": "SKU-001",
+    "price": 1500
+  },
+  {
+    "id": "def456",
+    "name": "Wireless Mouse",
+    "sku": "SKU-002",
+    "price": 350
+  }
+]
+```
+
+**Implementation:**
+```typescript
+// server/routes.ts
+app.get('/api/products', checkApiKey, async (req: Request, res: Response) => {
+  try {
+    if (!database) {
+      return res.status(500).json({ error: 'Firebase not configured' });
+    }
+
+    const inventoryRef = ref(database, 'inventory');
+    const snapshot = await get(inventoryRef);
+
+    if (!snapshot.exists()) {
+      return res.json([]);
+    }
+
+    const data = snapshot.val();
+    const products = Object.keys(data).map(key => {
+      const item: InventoryItem = { id: key, ...data[key] };
+      return {
+        id: item.id,
+        name: item.productName,
+        sku: item.sku,
+        price: item.unitPrice
+      };
+    });
+
+    res.json(products);
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    res.status(500).json({ error: 'Failed to fetch products' });
+  }
+});
+```
+
+**Error Responses:**
+- `401 Unauthorized`: Missing or invalid API key
+- `500 Internal Server Error`: Firebase not configured or database error
+
+### 6.2 Firebase Realtime Database Paths
+
+All primary operations use Firebase Realtime Database directly from the frontend.
+
+#### Inventory Operations
+
+**Path**: `/inventory/{itemId}`
+
+**Operations:**
+```typescript
+// Create
+const newItemRef = push(ref(database, 'inventory'));
+await set(newItemRef, itemData);
+
+// Read All
+const inventoryRef = ref(database, 'inventory');
+onValue(inventoryRef, (snapshot) => {
+  const data = snapshot.val();
+  // Process data
+});
+
+// Read Single
+const itemRef = ref(database, `inventory/${itemId}`);
+const snapshot = await get(itemRef);
+
+// Update
+const itemRef = ref(database, `inventory/${itemId}`);
+await set(itemRef, updatedData);
+
+// Delete
+const itemRef = ref(database, `inventory/${itemId}`);
+await remove(itemRef);
+```
+
+#### User Operations
+
+**Path**: `/users/{userId}`
+
+**Operations:**
+```typescript
+// Create User
+await set(ref(database, `users/${userId}`), userData);
+
+// Read User
+const userRef = ref(database, `users/${userId}`);
+const snapshot = await get(userRef);
+
+// Update User
+await set(ref(database, `users/${userId}`), updatedUserData);
+```
+
+#### Quotation Operations
+
+**Path**: `/quotations/{quotationId}`
+
+**Operations:**
+```typescript
+// Create Quotation
+const quotationRef = push(ref(database, 'quotations'));
+await set(quotationRef, quotationData);
+
+// Read All Quotations
+const quotationsRef = ref(database, 'quotations');
+onValue(quotationsRef, (snapshot) => {
+  const data = snapshot.val();
+});
+
+// Update Quotation
+await set(ref(database, `quotations/${quotationId}`), updatedData);
+
+// Delete Quotation
+await remove(ref(database, `quotations/${quotationId}`));
+```
+
+#### Quotation Items
+
+**Path**: `/quotationItems/{quotationId}/{itemId}`
+
+**Operations:**
+```typescript
+// Create Items
+const itemsRef = ref(database, `quotationItems/${quotationId}`);
+await set(itemsRef, itemsObject);
+
+// Read Items
+const itemsRef = ref(database, `quotationItems/${quotationId}`);
+const snapshot = await get(itemsRef);
+```
+
+#### Audit Logs
+
+**Path**: `/auditLogs/{logId}`
+
+**Operations:**
+```typescript
+// Create Log Entry
+const auditRef = ref(database, 'auditLogs');
+const newAuditRef = push(auditRef);
+await set(newAuditRef, auditData);
+
+// Read All Logs
+const logsRef = ref(database, 'auditLogs');
+onValue(logsRef, (snapshot) => {
+  const logs = snapshot.val();
+});
+```
+
+### 6.3 Authentication Endpoints
+
+Firebase Authentication handles all auth operations:
+
+#### Sign Up
+```typescript
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+
+const credential = await createUserWithEmailAndPassword(
+  auth, 
+  email, 
+  password
+);
+```
+
+#### Sign In
+```typescript
+import { signInWithEmailAndPassword } from 'firebase/auth';
+
+const credential = await signInWithEmailAndPassword(
+  auth,
+  email,
+  password
+);
+```
+
+#### Sign Out
+```typescript
+import { signOut } from 'firebase/auth';
+
+await signOut(auth);
+```
+
+#### Auth State Listener
+```typescript
+import { onAuthStateChanged } from 'firebase/auth';
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in
+  } else {
+    // User is signed out
+  }
+});
+```
+
+---
+
+## 7. FRONTEND ARCHITECTURE
+
+### 7.1 Pages
+
+#### HomePage.tsx
+
+**Purpose**: Main application interface after authentication
+
+**Location**: `client/src/pages/HomePage.tsx`
+
+**Features:**
+- Tab-based navigation (Dashboard, Inventory, Quotations, etc.)
+- Branch filtering
+- Search and filter controls
+- Real-time data display
+
+**State Management:**
+```typescript
+const [activeTab, setActiveTab] = useState('dashboard');
+const [selectedBranch, setSelectedBranch] = useState<BranchType | 'all'>('all');
+const [searchTerm, setSearchTerm] = useState('');
+const [productTypeFilter, setProductTypeFilter] = useState('all');
+const [stockLevelFilter, setStockLevelFilter] = useState('all');
+```
+
+**Tabs:**
+1. `dashboard` - Dashboard with KPIs
+2. `inventory` - Inventory table and management
+3. `quotations` - Quotation management
+4. `analytics` - Charts and analytics
+5. `import-export` - CSV operations
+6. `audit-logs` - Audit trail
+7. `users` - User management (Admin+ only)
+
+#### LoginPage.tsx
+
+**Purpose**: Authentication interface
+
+**Location**: `client/src/pages/LoginPage.tsx`
+
+**Features:**
+- Sign in form
+- Sign up form (tabbed interface)
+- Super admin bypass detection
+- Error handling
+
+**Forms:**
+```typescript
+// Sign In
+- username
+- password
+
+// Sign Up
+- username
+- email (optional)
+- password
+- role (for super admin bypass)
+```
+
+#### not-found.tsx
+
+**Purpose**: 404 error page
+
+**Location**: `client/src/pages/not-found.tsx`
+
+**Simple error display for invalid routes**
+
+### 7.2 Components
+
+#### Core Components
+
+##### Layout.tsx
+**Purpose**: Application shell with navigation
+
+**Features:**
+- Top navigation bar
+- Sidebar with tab buttons
+- User profile dropdown
+- Logout functionality
+
+**Props:**
+```typescript
+interface LayoutProps {
+  children: React.ReactNode;
+  activeTab: string;
+  onTabChange: (tab: string) => void;
+}
+```
+
+##### Dashboard.tsx
+**Purpose**: KPI display
+
+**Features:**
+- Total items count
+- Low stock alerts
+- Branch count
+- Total inventory value
+
+**Props:**
+```typescript
+interface DashboardProps {
+  items: InventoryItem[];
+}
+```
+
+##### InventoryTable.tsx
+**Purpose**: Main inventory data table
+
+**Features:**
+- Sortable columns
+- Multi-select with checkboxes
+- Edit/delete actions
+- Stock level badges
+- Pagination
+
+**Props:**
+```typescript
+interface InventoryTableProps {
+  items: InventoryItem[];
+}
+```
+
+##### AddItemModal.tsx
+**Purpose**: Create new inventory item
+
+**Features:**
+- Form validation with Zod
+- Branch selection
+- Stock threshold configuration
+- Real-time validation feedback
+
+**Props:**
+```typescript
+interface AddItemModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+```
+
+##### EditItemModal.tsx
+**Purpose**: Update existing inventory item
+
+**Features:**
+- Pre-populated form
+- Role-based field restrictions
+- Stock threshold adjustment (Admin+)
+- Audit logging
+
+**Props:**
+```typescript
+interface EditItemModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  item: InventoryItem | null;
+}
+```
+
+##### StockBadge.tsx
+**Purpose**: Visual stock level indicator
+
+**Features:**
+- Color-coded badges (red/yellow/green)
+- Percentage display
+- Tooltip with details
+
+**Props:**
+```typescript
+interface StockBadgeProps {
+  currentStock: number;
+  targetStockLevel: number;
+  lowThreshold: number;
+  mediumThreshold: number;
+}
+```
+
+##### AnalyticsCharts.tsx
+**Purpose**: Data visualization
+
+**Features:**
+- Pie chart: Stock distribution by branch
+- Bar chart: Stock levels
+- Recharts integration
+
+**Props:**
+```typescript
+interface AnalyticsChartsProps {
+  items: InventoryItem[];
+}
+```
+
+##### CSVImportExport.tsx
+**Purpose**: Bulk data operations
+
+**Features:**
+- CSV file upload
+- Data validation
+- Error reporting
+- Export to CSV
+- Progress tracking
+
+**Props:**
+```typescript
+interface CSVImportExportProps {
+  items: InventoryItem[];
+  selectedBranch: BranchType | 'all';
+}
+```
+
+##### QuotationManager.tsx
+**Purpose**: Quotation list and management
+
+**Features:**
+- Quotation table
+- Status filtering
+- Create/edit/view/delete operations
+- PDF generation
+
+**Props:**
+```typescript
+interface QuotationManagerProps {
+  // No props - manages own state
+}
+```
+
+##### UserManagement.tsx
+**Purpose**: User administration (SuperAdmin only)
+
+**Features:**
+- User list
+- Create users
+- Role assignment
+- Active/inactive toggle
+
+**Props:**
+```typescript
+interface UserManagementProps {
+  // No props - manages own state
+}
+```
+
+##### AuditLogs.tsx
+**Purpose**: System activity log
+
+**Features:**
+- Chronological log display
+- Action type filtering
+- User attribution
+- Value change tracking
+
+**Props:**
+```typescript
+interface AuditLogsProps {
+  // No props - manages own state
+}
+```
+
+#### UI Components (shadcn/ui)
+
+Located in `client/src/components/ui/`:
+
+- `button.tsx` - Button component
+- `card.tsx` - Card container
+- `dialog.tsx` - Modal dialog
+- `form.tsx` - Form wrapper
+- `input.tsx` - Text input
+- `label.tsx` - Form label
+- `select.tsx` - Dropdown select
+- `table.tsx` - Data table
+- `badge.tsx` - Badge/tag
+- `checkbox.tsx` - Checkbox
+- `alert.tsx` - Alert message
+- `toast.tsx` - Toast notification
+- And 20+ more...
+
+### 7.3 Hooks
+
+#### useAuth Hook
+
+**Location**: `client/src/hooks/useAuth.ts`
+
+**Purpose**: Access authentication context
+
+**Returns:**
+```typescript
+{
+  currentUser: User | null;
+  loading: boolean;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  createUser: (userData: InsertUser) => Promise<void>;
+  checkSuperAdminBypass: () => boolean;
+}
+```
+
+**Usage:**
+```typescript
+const { currentUser, login, logout } = useAuth();
+
+// Check if user is admin
+const isAdmin = currentUser?.role === 'admin';
+
+// Login
+await login(username, password);
+
+// Logout
+await logout();
+```
+
+#### useInventory Hook
+
+**Location**: `client/src/hooks/useInventory.ts`
+
+**Purpose**: Manage inventory operations
+
+**Parameters:**
+```typescript
+useInventory(selectedBranch?: BranchType | 'all')
+```
+
+**Returns:**
+```typescript
+{
+  items: InventoryItem[];
+  loading: boolean;
+  error: string | null;
+  addItem: (item: InsertInventoryItem) => Promise<string>;
+  updateItem: (item: UpdateInventoryItem) => Promise<void>;
+  deleteItem: (itemId: string) => Promise<void>;
+  importItems: (items: InsertInventoryItem[]) => Promise<ImportResult>;
+}
+```
+
+**Usage:**
+```typescript
+const { items, loading, addItem, updateItem, deleteItem } = useInventory('all');
+
+// Add item
+await addItem({
+  branch: 'main_warehouse',
+  productName: 'Widget',
+  sku: 'SKU-001',
+  // ... other fields
+});
+
+// Update item
+await updateItem({
+  id: 'item123',
+  currentStock: 50
+});
+
+// Delete item
+await deleteItem('item123');
+```
+
+#### useQuotations Hook
+
+**Location**: `client/src/hooks/useQuotations.ts`
+
+**Purpose**: Manage quotations
+
+**Returns:**
+```typescript
+{
+  quotations: Quotation[];
+  loading: boolean;
+  error: string | null;
+  addQuotation: (quotation: InsertQuotation, items: QuotationItem[]) => Promise<string>;
+  updateQuotation: (quotation: UpdateQuotation) => Promise<void>;
+  deleteQuotation: (id: string) => Promise<void>;
+  getQuotationItems: (quotationId: string) => Promise<QuotationItem[]>;
+}
+```
+
+**Usage:**
+```typescript
+const { quotations, addQuotation } = useQuotations();
+
+// Create quotation
+await addQuotation(quotationData, lineItems);
+```
+
+#### use-toast Hook
+
+**Location**: `client/src/hooks/use-toast.ts`
+
+**Purpose**: Show toast notifications
+
+**Returns:**
+```typescript
+{
+  toast: (options: ToastOptions) => void;
+  toasts: Toast[];
+  dismiss: (toastId: string) => void;
+}
+```
+
+**Usage:**
+```typescript
+const { toast } = useToast();
+
+// Success message
+toast({
+  title: "Success",
+  description: "Item added successfully!",
+  className: "toast-custom"
+});
+
+// Error message
+toast({
+  title: "Error",
+  description: "Failed to save",
+  variant: "destructive"
+});
+```
+
+### 7.4 Contexts
+
+#### AuthContext
+
+**Location**: `client/src/contexts/AuthContext.tsx`
+
+**Purpose**: Global authentication state
+
+**Provider:**
+```typescript
+<AuthProvider>
+  <App />
+</AuthProvider>
+```
+
+**Context Value:**
+```typescript
+interface AuthContextType {
+  currentUser: User | null;
+  loading: boolean;
+  login: (username: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
+  createUser: (userData: CreateUserData) => Promise<void>;
+  checkSuperAdminBypass: () => boolean;
+}
+```
+
+**Implementation Highlights:**
+- Firebase Auth integration
+- Custom user data overlay
+- First user = SuperAdmin logic
+- Super admin bypass (dev only)
+- Session persistence
+
+### 7.5 Routing
+
+**Router**: Wouter (lightweight, < 1.5KB)
+
+**Location**: `client/src/App.tsx`
+
+**Routes:**
+```typescript
+<Router>
+  <Route path="/" component={currentUser ? HomePage : LoginPage} />
+  <Route path="*" component={NotFound} />
+</Router>
+```
+
+**Protected Routes:**
+- Authentication required for `HomePage`
+- Unauthenticated users redirected to `LoginPage`
+- No route → 404 page
+
+---
+
+## 8. USER ROLES & PERMISSIONS
+
+### 8.1 Staff Role
+
+**Role Code**: `'staff'`
+
+**Permissions:**
+✅ View inventory (all branches)  
+✅ View quotations  
+✅ View audit logs  
+✅ View dashboard analytics  
+✅ Search and filter data  
+
+**Restrictions:**
+❌ Create inventory items  
+❌ Edit inventory items  
+❌ Delete inventory items  
+❌ Create quotations  
+❌ Edit quotations  
+❌ Delete quotations  
+❌ Import CSV data  
+❌ Export CSV data  
+❌ Create users  
+❌ Edit users  
+❌ Delete users  
+
+**Use Cases:**
+- Warehouse floor staff
+- Customer service (inquiry only)
+- Auditors (read-only access)
+- Trainee staff
+
+**Interface Differences:**
+- No "Add Item" button
+- No edit/delete buttons in inventory table
+- No "Create Quotation" button
+- No "Import/Export" tab access
+- No "User Management" tab
+
+### 8.2 Admin Role
+
+**Role Code**: `'admin'`
+
+**Permissions:**
+✅ All Staff permissions  
+✅ Create inventory items  
+✅ Edit inventory items  
+✅ Delete inventory items  
+✅ **Configure stock thresholds**  
+✅ Create quotations  
+✅ Edit quotations  
+✅ Delete quotations  
+✅ Import CSV data  
+✅ Export CSV data  
+✅ PDF generation  
+
+**Restrictions:**
+❌ Create users  
+❌ Edit users  
+❌ Delete users  
+❌ Access user management  
+
+**Use Cases:**
+- Warehouse managers
+- Operations team
+- Inventory controllers
+- Quotation specialists
+
+**Interface Features:**
+- Full inventory management
+- Stock threshold configuration
+- CSV import/export
+- Quotation management
+- No user management access
+
+### 8.3 SuperAdmin Role
+
+**Role Code**: `'superadmin'`
+
+**Permissions:**
+✅ All Admin permissions  
+✅ Create users (any role)  
+✅ Edit users  
+✅ Delete users  
+✅ System configuration  
+✅ Full access to all features  
+
+**No Restrictions**
+
+**Use Cases:**
+- System administrators
+- Business owners
+- IT team
+- Database administrators
+
+**Special Features:**
+- User management tab visible
+- Can create other SuperAdmins
+- Super admin bypass available (dev)
+- First user automatically becomes SuperAdmin
+
+### 8.4 Permission Matrix
+
+| Feature | Staff | Admin | SuperAdmin |
+|---------|:-----:|:-----:|:----------:|
+| **Inventory** |
+| View Items | ✅ | ✅ | ✅ |
+| Add Items | ❌ | ✅ | ✅ |
+| Edit Items | ❌ | ✅ | ✅ |
+| Delete Items | ❌ | ✅ | ✅ |
+| Configure Thresholds | ❌ | ✅ | ✅ |
+| **Quotations** |
+| View Quotations | ✅ | ✅ | ✅ |
+| Create Quotations | ❌ | ✅ | ✅ |
+| Edit Quotations | ❌ | ✅ | ✅ |
+| Delete Quotations | ❌ | ✅ | ✅ |
+| Generate PDF | ❌ | ✅ | ✅ |
+| **Data Operations** |
+| Import CSV | ❌ | ✅ | ✅ |
+| Export CSV | ❌ | ✅ | ✅ |
+| View Audit Logs | ✅ | ✅ | ✅ |
+| **User Management** |
+| View Users | ❌ | ❌ | ✅ |
+| Create Users | ❌ | ❌ | ✅ |
+| Edit Users | ❌ | ❌ | ✅ |
+| Delete Users | ❌ | ❌ | ✅ |
+| Assign Roles | ❌ | ❌ | ✅ |
+| **Analytics** |
+| View Dashboard | ✅ | ✅ | ✅ |
+| View Charts | ✅ | ✅ | ✅ |
+| Custom Reports | ❌ | ✅ | ✅ |
+
+---
+
+## 9. CORE FEATURES
+
+### 9.1 Inventory Management
+
+#### Overview
+Simplified inventory tracking system with real-time synchronization across all branches.
+
+#### Key Capabilities
+1. **Multi-Branch Tracking**
+   - Main Warehouse
+   - Estancia Branch
+   - Greenhills Branch
+   - Cross-branch visibility
+
+2. **Product Information**
+   - Product Type (category)
+   - Product Name
+   - SKU (unique identifier)
+   - Unit Price
+   - Current Stock quantity
+
+3. **Stock Operations**
+   - Create new products
+   - Update stock levels
+   - Edit product details
+   - Delete items
+   - Bulk operations
+
+#### Simplified Stock System
+
+**Before (Complex 4-column system):**
+- BEG Stock (beginning)
+- IN Stock (received)
+- OUT Stock (sold)
+- END Stock (ending)
+- Manual calculations required
+
+**After (Simplified):**
+- Single "Current Stock" field
+- Direct quantity entry
+- No calculations needed
+- Warehouse team friendly
+
+**Benefits:**
+- Faster data entry
+- Fewer errors
+- Easier training
+- Real-time accuracy
+
+### 9.2 Dynamic Stock Thresholds
+
+#### Overview
+Per-product customizable stock level thresholds using percentage-based calculations.
+
+#### Configuration
+
+**Target Stock Level:**
+- Ideal quantity to maintain
+- Default: 100 units
+- Customizable per product
+
+**Low Threshold:**
+- Percentage of target for "low stock" alert
+- Default: 25%
+- Example: 25 units for target of 100
+
+**Medium Threshold:**
+- Percentage of target for "medium stock" warning
+- Default: 50%
+- Example: 50 units for target of 100
+
+#### Stock Level Calculation
+
+**Algorithm:**
+```
+percentage = (current_stock / target_stock_level) × 100
+
+if percentage >= medium_threshold:
+  status = "HIGH" (green badge)
+else if percentage >= low_threshold:
+  status = "MEDIUM" (yellow badge)
+else:
+  status = "LOW" (red badge)
+```
+
+**Example Scenarios:**
+
+**Scenario 1: High-Value Electronics**
+```
+Product: Laptop
+Target Stock Level: 50 units
+Low Threshold: 40% (20 units)
+Medium Threshold: 60% (30 units)
+
+Current Stock: 35 units
+Calculation: (35 / 50) × 100 = 70%
+Status: HIGH ✅ (green badge)
+```
+
+**Scenario 2: Fast-Moving Consumables**
+```
+Product: Office Supplies
+Target Stock Level: 500 units
+Low Threshold: 20% (100 units)
+Medium Threshold: 40% (200 units)
+
+Current Stock: 150 units
+Calculation: (150 / 500) × 100 = 30%
+Status: MEDIUM ⚠️ (yellow badge)
+```
+
+**Scenario 3: Slow-Moving Items**
+```
+Product: Specialty Parts
+Target Stock Level: 20 units
+Low Threshold: 25% (5 units)
+Medium Threshold: 50% (10 units)
+
+Current Stock: 3 units
+Calculation: (3 / 20) × 100 = 15%
+Status: LOW 🚨 (red badge)
+```
+
+#### Visual Indicators
+
+**Stock Badges:**
+- 🟢 **Green (High)**: Stock ≥ Medium threshold
+- 🟡 **Yellow (Medium)**: Stock between Low and Medium thresholds
+- 🔴 **Red (Low)**: Stock < Low threshold
+
+**Badge Display:**
+```
+[High] 45 units (60% of target)
+[Medium] 30 units (40% of target)
+[Low] 15 units (20% of target)
+```
+
+#### Admin Configuration
+
+**Setting Thresholds:**
+1. Navigate to inventory item
+2. Click "Edit" (Admin+ only)
+3. Scroll to "Stock Level Thresholds" section
+4. Configure:
+   - Target Stock Level
+   - Low Threshold %
+   - Medium Threshold %
+5. Save changes
+6. Badge updates automatically
+
+**Best Practices:**
+- High-value items: Higher thresholds (30-70%)
+- Fast-moving items: Lower thresholds (15-40%)
+- Seasonal items: Adjust before peak season
+- Review quarterly and adjust as needed
+
+### 9.3 Multi-Branch Operations
+
+#### Branch Locations
+
+**1. Main Warehouse**
+- Code: `main_warehouse`
+- Display: "Main Warehouse"
+- Primary distribution hub
+- Largest inventory quantities
+- Central receiving and shipping
+
+**2. Estancia**
+- Code: `estancia`
+- Display: "Estancia"
+- Branch location
+- Local customer fulfillment
+- Independent stock tracking
+
+**3. Greenhills**
+- Code: `greenhills`
+- Display: "Greenhills"
+- Branch location
+- Local customer fulfillment
+- Independent stock tracking
+
+#### Branch Filtering
+
+**All Branches View:**
+- See combined inventory
+- Dashboard shows totals across all locations
+- Export includes all branch data
+
+**Single Branch View:**
+- Filter to specific location
+- Branch-specific metrics
+- Targeted stock management
+- Branch-only exports
+
+#### Cross-Branch Features
+
+**Stock Transfer (Future Feature):**
+- Move inventory between branches
+- Audit trail of transfers
+- Automatic stock adjustment
+
+**Branch Comparison:**
+- Analytics show distribution
+- Identify stock imbalances
+- Optimize allocation
+
+### 9.4 Quotation System
+
+#### Overview
+Professional digital quotation generation with inventory integration.
+
+#### Quotation Workflow
+
+**1. Draft → Sent → Accepted/Rejected/Expired**
+
+**States:**
+- **Draft**: Being created, not sent
+- **Sent**: Delivered to customer
+- **Accepted**: Customer approved
+- **Rejected**: Customer declined
+- **Expired**: Validity period passed
+
+#### Creating Quotations
+
+**Step 1: Customer Information**
+```
+- Customer Name *
+- Customer Email
+- Customer Phone
+- Customer Address
+- PO Number
+- Due Date
+```
+
+**Step 2: Line Items**
+```
+Option A: From Inventory
+- Select inventory item
+- Quantity auto-populated
+- Unit price from inventory
+- Description from product name
+
+Option B: Custom Item
+- Manual description
+- Custom quantity
+- Custom unit price
+```
+
+**Step 3: Financial Details**
+```
+Subtotal: Sum of all line items
+Discount: Percentage (0-100%)
+Discount Amount: Calculated
+VAT: Percentage (default 12%)
+VAT Amount: Calculated
+Total Amount: Final total
+```
+
+**Step 4: Additional Info**
+```
+- Valid Until date
+- Notes/Terms
+- Status (draft/sent)
+```
+
+#### Quotation Numbering
+
+**Format**: `QUO-YYYYMMDD-XXXX`
+
+**Example**: `QUO-20251021-1234`
+
+**Generation:**
+```typescript
+const now = new Date();
+const year = now.getFullYear();
+const month = String(now.getMonth() + 1).padStart(2, '0');
+const day = String(now.getDate()).padStart(2, '0');
+const time = String(now.getTime()).slice(-4);
+return `QUO-${year}${month}${day}-${time}`;
+```
+
+#### Financial Calculations
+
+**Formula:**
+```
+Subtotal = Σ(quantity × unitPrice) for all items
+
+Discount Amount = Subtotal × (Discount % / 100)
+
+After Discount = Subtotal - Discount Amount
+
+VAT Amount = After Discount × (VAT % / (100 + VAT %))
+
+Total Amount = After Discount
+```
+
+**Example:**
+```
+Line Items:
+  Item 1: 10 × $100 = $1,000
+  Item 2: 5 × $200 = $1,000
+  
+Subtotal: $2,000
+Discount (10%): -$200
+After Discount: $1,800
+VAT (12%): $192.86 (extracted)
+Total Amount: $1,800
+```
+
+#### PDF Generation
+
+**Features:**
+- Professional format
+- Company branding
+- Line item table
+- Financial breakdown
+- Terms and conditions
+
+**Download:**
+- Click "View" on quotation
+- Click "Download PDF" button
+- PDF generated and downloaded
+
+### 9.5 Analytics & Dashboard
+
+#### Dashboard Metrics
+
+**1. Total Items**
+- Count of all inventory items
+- Across all branches
+- Real-time updates
+
+**2. Low Stock Items**
+- Items below low threshold
+- Uses dynamic thresholds
+- Requires immediate attention
+
+**3. Active Branches**
+- Number of branches with inventory
+- Typically: 3
+
+**4. Total Inventory Value**
+- Sum of (current stock × unit price)
+- Estimated value
+- Real-time calculation
+
+#### Charts
+
+**Stock Distribution by Branch (Pie Chart):**
+- Shows percentage per branch
+- Color-coded segments
+- Hover for details
+
+**Current Stock Levels (Bar Chart):**
+- Branch comparison
+- Stock quantity visualization
+- Identify imbalances
+
+#### Filters
+
+**Branch Filter:**
+- All Branches
+- Main Warehouse
+- Estancia
+- Greenhills
+
+**Product Type Filter:**
+- All Types
+- Electronics
+- Furniture
+- Supplies
+- etc.
+
+**Stock Level Filter:**
+- All Levels
+- High Stock
+- Medium Stock
+- Low Stock
+
+**Search:**
+- Product Name
+- SKU
+- Product Type
+
+### 9.6 CSV Import/Export
+
+#### Export Functionality
+
+**Export Format:**
+```csv
+Branch,Product Type,Product Name,SKU,Unit Price,Current Stock,Target Stock Level,Low Threshold (%),Medium Threshold (%),Last Updated
+main_warehouse,Electronics,Laptop Stand,SKU-001,1500,50,100,25,50,10/21/2025
+estancia,Furniture,Office Chair,SKU-002,5000,20,50,30,60,10/21/2025
+```
+
+**Export Options:**
+- Export all branches
+- Export selected branch
+- Includes all product data
+- Includes threshold configurations
+
+**Export Process:**
+1. Select branch (or "All")
+2. Click "Export CSV"
+3. File downloads automatically
+4. Filename: `gamachan_inventory_{branch}_{date}.csv`
+
+#### Import Functionality
+
+**Import Format:**
+Same as export format (see above)
+
+**Import Process:**
+1. Prepare CSV file (Excel/Google Sheets)
+2. Click "Import CSV"
+3. Select file
+4. System validates data
+5. Preview shows results
+6. Confirm import
+7. Items created/updated
+
+**Validation:**
+- Required fields check
+- Data type validation
+- Branch name verification
+- SKU uniqueness check
+- Threshold range validation (0-100%)
+
+**Import Behavior:**
+- **New SKU**: Creates new item
+- **Existing SKU**: Updates item
+- **Errors**: Reported with line numbers
+- **Partial Success**: Valid items imported, errors listed
+
+**Error Examples:**
+```
+Line 5: Invalid branch name "downtown"
+Line 12: Missing required field "Product Name"
+Line 18: Invalid unit price "-50"
+Line 23: Threshold percentage must be 0-100
+```
+
+### 9.7 Audit Logging
+
+#### Overview
+Complete history of all inventory operations with user attribution.
+
+#### Logged Actions
+
+**Create:**
+- New inventory item added
+- User who created
+- Timestamp
+- All initial values
+
+**Update:**
+- Item modified
+- User who updated
+- Timestamp
+- Old values
+- New values
+
+**Delete:**
+- Item removed
+- User who deleted
+- Timestamp
+- Final values before deletion
+
+**Import:**
+- CSV import operation
+- User who imported
+- Timestamp
+- Number of items affected
+
+#### Audit Log Display
+
+**Table Columns:**
+- Timestamp
+- Action Type
+- User
+- Product Name
+- SKU
+- Changes (old → new)
+
+**Filtering:**
+- By action type
+- By user
+- By date range
+- By product
+
+**Example Entry:**
+```
+2025-10-21 14:30:45
+UPDATE by admin@example.com
+Product: Laptop Stand (SKU-001)
+Changes:
+  currentStock: 45 → 50
+  updatedAt: 1729520400000 → 1729520645000
+```
+
+### 9.8 User Management
+
+#### Overview
+SuperAdmin-only feature for managing user accounts.
+
+#### User Operations
+
+**Create User:**
+1. Navigate to "User Management" tab
+2. Click "Create New User"
+3. Fill in details:
+   - Username
+   - Email
+   - Password
+   - Role (Staff/Admin/SuperAdmin)
+4. Click "Create User"
+5. User can now login
+
+**Edit User:**
+- Update username
+- Update email
+- Change role
+- Toggle active/inactive
+
+**Delete User:**
+- Soft delete (mark inactive)
+- Or hard delete (remove completely)
+
+**Password Reset:**
+- Firebase Auth password reset
+- Email-based reset link
+
+#### User List Display
+
+**Columns:**
+- Username
+- Email
+- Role
+- Status (Active/Inactive)
+- Created Date
+- Actions
+
+**Filters:**
+- By role
+- By status
+- Search by username/email
+
+---
+
+## 10. USER GUIDES
+
+### 10.1 Getting Started
+
+#### First-Time Setup
+
+**1. Access the Application**
+```
+Development: http://localhost:5000
+Production: Your deployed URL
+```
+
+**2. Check Firebase Configuration**
+- If you see "Firebase Configuration Required" screen
+- Ensure environment variables are set
+- Contact system administrator if needed
+
+**3. Create First Account**
+- Click "Create Account" tab
+- Enter username (minimum 3 characters)
+- Enter email (optional but recommended)
+- Enter secure password
+- Click "Create Account"
+- You're now logged in as SuperAdmin
+
+**4. Explore the Interface**
+- Dashboard: Overview of inventory
+- Inventory: Main data table
+- Other tabs: Explore features
+
+**5. Add First Inventory Item**
+- Click "Add Item" button
+- Fill in product details
+- Configure stock thresholds
+- Click "Add Item"
+- See item appear in table
+
+### 10.2 Daily Operations
+
+#### Morning Checklist
+
+**1. Check Dashboard:**
+- Review total items
+- Check low stock alerts
+- Note inventory value
+
+**2. Address Low Stock:**
+- Filter by "Low Stock"
+- Review items below threshold
+- Plan restocking
+
+**3. Process Updates:**
+- Update stock levels from overnight receipts
+- Record sales from previous day
+- Adjust quantities as needed
+
+#### Stock Updates
+
+**Single Item Update:**
+1. Find item in inventory table
+2. Click "Edit" button
+3. Update "Current Stock"
+4. Click "Save Changes"
+
+**Bulk Updates:**
+1. Export current inventory to CSV
+2. Update quantities in spreadsheet
+3. Import updated CSV
+4. Review import results
+
+### 10.3 Managing Inventory
+
+#### Adding Products
+
+**Step-by-Step:**
+1. Click "Add Item" button
+2. Select Branch:
+   - Main Warehouse
+   - Estancia
+   - Greenhills
+3. Enter Product Type (e.g., "Electronics")
+4. Enter Product Name (e.g., "Laptop Stand")
+5. Enter SKU (e.g., "SKU-001")
+6. Enter Unit Price (e.g., 1500)
+7. Enter Current Stock (e.g., 50)
+8. Configure Thresholds (optional):
+   - Target Stock Level: 100
+   - Low Threshold: 25%
+   - Medium Threshold: 50%
+9. Click "Add Item"
+
+**Result:**
+- Item appears in table
+- Stock badge shows current level
+- Audit log records creation
+
+#### Editing Products
+
+**What You Can Edit:**
+- Product Type
+- Product Name
+- SKU (carefully - must remain unique)
+- Unit Price
+- Current Stock
+- Target Stock Level (Admin+)
+- Low Threshold % (Admin+)
+- Medium Threshold % (Admin+)
+
+**What You Cannot Edit:**
+- Branch (create new item if needed)
+- Created Date
+- Created By user
+
+**Process:**
+1. Click "Edit" on item row
+2. Modify desired fields
+3. Click "Save Changes"
+4. Changes sync immediately
+5. Audit log records update
+
+#### Deleting Products
+
+**⚠️ Warning**: Deletion is permanent!
+
+**Process:**
+1. Click "Delete" on item row
+2. Confirm deletion in dialog
+3. Item removed from inventory
+4. Audit log records deletion
+
+**Bulk Delete:**
+1. Select multiple items with checkboxes
+2. Click "Delete Selected" button
+3. Confirm bulk deletion
+4. All selected items removed
+
+### 10.4 Creating Quotations
+
+#### Step 1: Start New Quotation
+
+1. Navigate to "Quotations" tab
+2. Click "Create New Quotation"
+3. Modal opens with blank form
+
+#### Step 2: Customer Details
+
+Fill in customer information:
+```
+Customer Name: ABC Corporation
+Customer Email: contact@abc.com
+Customer Phone: +1-555-0100
+Customer Address: 123 Business St, City, State
+PO Number: PO-2025-001
+Due Date: 2025-11-30
+```
+
+#### Step 3: Add Line Items
+
+**Option A: From Inventory**
+1. Click "Add from Inventory"
+2. Select inventory item
+3. Quantity and price auto-fill
+4. Click "Add Item"
+
+**Option B: Custom Item**
+1. Click "Add Custom Item"
+2. Enter description
+3. Enter quantity
+4. Enter unit price
+5. Click "Add Item"
+
+**Managing Items:**
+- Edit item: Click edit icon
+- Delete item: Click delete icon
+- Reorder: Drag and drop
+
+#### Step 4: Financial Details
+
+**Discount:**
+- Enter discount percentage (0-100%)
+- Amount calculated automatically
+
+**VAT:**
+- Default 12%
+- Adjust if needed
+- Amount calculated automatically
+
+**Totals:**
+- Subtotal: Sum of line items
+- After Discount: Subtotal - Discount
+- Total: After discount (VAT included)
+
+#### Step 5: Additional Information
+
+**Valid Until:**
+- Set quotation expiration date
+- Defaults to 30 days from creation
+
+**Notes:**
+- Payment terms
+- Delivery terms
+- Warranty information
+- Other conditions
+
+#### Step 6: Save Quotation
+
+**Save as Draft:**
+- Still editable
+- Not sent to customer
+- Can modify later
+
+**Mark as Sent:**
+- Status changes to "Sent"
+- Ready for customer review
+- Can still edit if needed
+
+#### Step 7: Generate PDF
+
+1. Find quotation in list
+2. Click "View"
+3. Review quotation details
+4. Click "Download PDF"
+5. PDF generated and downloaded
+6. Send to customer
+
+### 10.5 Importing/Exporting Data
+
+#### Exporting Data
+
+**Export All Branches:**
+1. Navigate to "Import/Export" tab
+2. Ensure "All Branches" is selected
+3. Click "Export CSV"
+4. File downloads: `gamachan_inventory_All_Branches_YYYY-MM-DD.csv`
+
+**Export Single Branch:**
+1. Select branch from dropdown
+2. Click "Export CSV"
+3. File downloads: `gamachan_inventory_{Branch}_YYYY-MM-DD.csv`
+
+**Use Cases:**
+- Backup inventory data
+- External analysis in Excel
+- Reporting to management
+- Year-end reconciliation
+
+#### Importing Data
+
+**Preparation:**
+1. Export current inventory (for reference)
+2. Open exported CSV in Excel/Google Sheets
+3. Modify data as needed
+4. Ensure format matches template
+5. Save as CSV
+
+**CSV Format Requirements:**
+```csv
+Branch,Product Type,Product Name,SKU,Unit Price,Current Stock,Target Stock Level,Low Threshold (%),Medium Threshold (%)
+main_warehouse,Electronics,Laptop,SKU-001,45000,25,50,25,50
+```
+
+**Required Columns:**
+- Branch
+- Product Type
+- Product Name
+- SKU
+- Unit Price
+- Current Stock
+
+**Optional Columns:**
+- Target Stock Level (defaults to 100)
+- Low Threshold % (defaults to 25)
+- Medium Threshold % (defaults to 50)
+
+**Import Process:**
+1. Click "Import CSV"
+2. Click "Choose File"
+3. Select your CSV file
+4. System validates data
+5. Preview shows:
+   - Items to be created
+   - Items to be updated
+   - Errors (if any)
+6. Review carefully
+7. Click "Confirm Import"
+8. Progress bar shows import status
+9. Results displayed:
+   - X items imported
+   - Y items updated
+   - Z errors
+
+**Error Handling:**
+- Invalid data: Item skipped, error listed
+- Valid items: Imported successfully
+- Review errors and fix
+- Re-import if needed
+
+### 10.6 Understanding Stock Levels
+
+#### Stock Level Badges
+
+**Visual Indicators:**
+
+🟢 **High Stock (Green)**
+- Current stock ≥ Medium Threshold
+- Adequate inventory
+- No immediate action needed
+- Example: 60 units (60% of target 100)
+
+🟡 **Medium Stock (Yellow)**
+- Current stock between Low and Medium thresholds
+- Monitor closely
+- Plan restock soon
+- Example: 35 units (35% of target 100)
+
+🔴 **Low Stock (Red)**
+- Current stock < Low Threshold
+- Immediate attention needed
+- Restock urgently
+- Example: 20 units (20% of target 100)
+
+#### Reading Stock Badges
+
+**Badge Format:**
+```
+[Level] Quantity (Percentage of target)
+```
+
+**Examples:**
+```
+[High] 75 units (75% of target)
+[Medium] 40 units (40% of target)
+[Low] 15 units (15% of target)
+```
+
+**Hover for Details:**
+- Current stock quantity
+- Target stock level
+- Percentage of target
+- Threshold percentages
+
+#### Interpreting Stock Status
+
+**Scenario Analysis:**
+
+**Product: Office Chair**
+```
+Current Stock: 12 units
+Target Stock Level: 40 units
+Low Threshold: 25% (10 units)
+Medium Threshold: 50% (20 units)
+
+Calculation: (12 / 40) × 100 = 30%
+Status: MEDIUM (between 25% and 50%)
+Action: Plan to restock within 1-2 weeks
+```
+
+**Product: Laptop**
+```
+Current Stock: 5 units
+Target Stock Level: 50 units
+Low Threshold: 30% (15 units)
+Medium Threshold: 60% (30 units)
+
+Calculation: (5 / 50) × 100 = 10%
+Status: LOW (below 30%)
+Action: Restock immediately
+```
+
+**Product: Desk Lamp**
+```
+Current Stock: 80 units
+Target Stock Level: 100 units
+Low Threshold: 25% (25 units)
+Medium Threshold: 50% (50 units)
+
+Calculation: (80 / 100) × 100 = 80%
+Status: HIGH (above 50%)
+Action: Stock is adequate
+```
+
+#### Configuring Thresholds
+
+**When to Customize:**
+
+**High-Value Items:**
+- Laptops, tablets, expensive equipment
+- Higher thresholds (30-40% low, 60-70% medium)
+- Maintain larger safety stock
+- Avoid stockouts of expensive items
+
+**Fast-Moving Items:**
+- Office supplies, consumables
+- Lower thresholds (15-20% low, 30-40% medium)
+- Quick turnover expected
+- Restock more frequently
+
+**Seasonal Items:**
+- Holiday decorations, seasonal products
+- Adjust before peak season
+- Higher thresholds during season
+- Lower after season
+
+**Slow-Moving Items:**
+- Specialty products, niche items
+- Standard thresholds often sufficient
+- Monitor for obsolescence
+
+**Configuration Steps:**
+1. Edit inventory item
+2. Scroll to "Stock Level Thresholds"
+3. Adjust Target Stock Level
+4. Adjust Low Threshold %
+5. Adjust Medium Threshold %
+6. Save changes
+7. Badge updates immediately
+
+---
+
+## 11. DEVELOPER GUIDE
+
+### 11.1 Project Structure
+
+#### Complete Directory Tree
+```
+gamachan-inventory/
+├── attached_assets/          # User-uploaded files
+│
+├── client/                   # Frontend Application
+│   └── src/
+│       ├── components/       # React Components
+│       │   ├── ui/          # Base UI Components (30+)
+│       │   ├── AddItemModal.tsx
+│       │   ├── AnalyticsCharts.tsx
+│       │   ├── AuditLogs.tsx
+│       │   ├── BranchTabs.tsx
+│       │   ├── CreateQuotationModal.tsx
+│       │   ├── CSVImportExport.tsx
+│       │   ├── Dashboard.tsx
+│       │   ├── EditItemModal.tsx
+│       │   ├── InventoryTable.tsx
+│       │   ├── Layout.tsx
+│       │   ├── QuotationManager.tsx
+│       │   ├── SearchFilters.tsx
+│       │   ├── StockBadge.tsx
+│       │   ├── UserManagement.tsx
+│       │   └── ViewQuotationModal.tsx
+│       │
+│       ├── contexts/         # React Context
+│       │   └── AuthContext.tsx
+│       │
+│       ├── hooks/            # Custom Hooks
+│       │   ├── useAuth.ts
+│       │   ├── useInventory.ts
+│       │   ├── useQuotations.ts
+│       │   └── use-toast.ts
+│       │
+│       ├── lib/              # Utilities
+│       │   ├── firebase.ts
+│       │   ├── queryClient.ts
+│       │   └── utils.ts
+│       │
+│       ├── pages/            # Route Components
+│       │   ├── HomePage.tsx
+│       │   ├── LoginPage.tsx
+│       │   └── not-found.tsx
+│       │
+│       ├── App.tsx           # Router
+│       ├── main.tsx          # Entry Point
+│       └── index.css         # Global Styles
+│
+├── server/                   # Backend Application
+│   ├── index.ts             # Express Server
+│   ├── routes.ts            # API Routes
+│   ├── storage.ts           # Storage Interface
+│   └── vite.ts              # Vite Dev Server
+│
+├── shared/                   # Shared Code
+│   └── schema.ts            # Types & Schemas
+│
+├── components.json           # shadcn/ui config
+├── DOCUMENTATION.md          # Tech docs
+├── drizzle.config.ts        # Drizzle ORM config
+├── package.json             # Dependencies
+├── postcss.config.js        # PostCSS config
+├── README.md                # Project overview
+├── replit.md                # Project notes
+├── tailwind.config.ts       # Tailwind config
+├── tsconfig.json            # TypeScript config
+└── vite.config.ts           # Vite build config
+```
+
+#### Key Directories
+
+**`client/src/components/`**
+- All React components
+- UI components from shadcn/ui
+- Business logic components
+- Modals and forms
+
+**`client/src/hooks/`**
+- Custom React hooks
+- Data fetching logic
+- Firebase integration
+- State management
+
+**`client/src/lib/`**
+- Firebase configuration
+- React Query setup
+- Utility functions
+- Helper methods
+
+**`server/`**
+- Express server
+- API routes
+- Vite integration
+- Storage interfaces
+
+**`shared/`**
+- TypeScript types
+- Zod schemas
+- Helper functions
+- Shared constants
+
+### 11.2 Development Guidelines
+
+#### Code Standards
+
+**TypeScript:**
+- Strict mode enabled
+- All new code must be TypeScript
+- Avoid `any` type
+- Use interfaces and types
+- Document complex types
+
+**React:**
+- Functional components only
+- Use hooks (useState, useEffect, etc.)
+- Props interface for all components
+- Destructure props
+- Avoid prop drilling (use context)
+
+**Naming Conventions:**
+```typescript
+// Components: PascalCase
+export const InventoryTable = () => {};
+
+// Hooks: camelCase with "use" prefix
+export const useInventory = () => {};
+
+// Types: PascalCase
+export type User = z.infer<typeof userSchema>;
+
+// Constants: UPPER_SNAKE_CASE
+export const FIREBASE_CONFIG = {};
+
+// Functions: camelCase
+export const getBranchDisplayName = () => {};
+```
+
+**File Organization:**
+```
+// One component per file
+InventoryTable.tsx
+
+// Co-locate related files
+InventoryTable.tsx
+InventoryTable.test.tsx
+InventoryTable.styles.ts
+
+// Group by feature, not type
+/components/inventory/
+  ├── InventoryTable.tsx
+  ├── AddItemModal.tsx
+  └── EditItemModal.tsx
+```
+
+#### Component Patterns
+
+**Functional Component Template:**
+```typescript
+import { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { useToast } from '@/hooks/use-toast';
+
+interface MyComponentProps {
+  title: string;
+  onAction?: () => void;
+}
+
+export const MyComponent = ({ title, onAction }: MyComponentProps) => {
+  const [count, setCount] = useState(0);
+  const { toast } = useToast();
+
+  const handleClick = () => {
+    setCount(prev => prev + 1);
+    toast({
+      title: "Success",
+      description: `Count: ${count + 1}`
+    });
+    onAction?.();
+  };
+
+  return (
+    <div>
+      <h2>{title}</h2>
+      <p>Count: {count}</p>
+      <Button onClick={handleClick}>Increment</Button>
+    </div>
+  );
+};
+```
+
+**Custom Hook Template:**
+```typescript
+import { useState, useEffect } from 'react';
+import { ref, onValue } from 'firebase/database';
+import { database } from '@/lib/firebase';
+
+export const useMyData = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const dataRef = ref(database, 'path/to/data');
+    
+    const unsubscribe = onValue(dataRef, 
+      (snapshot) => {
+        setData(snapshot.val());
+        setLoading(false);
+      },
+      (error) => {
+        setError(error.message);
+        setLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  return { data, loading, error };
+};
+```
+
+### 11.3 Code Style
+
+#### Tailwind CSS
+
+**Usage:**
+```typescript
+// Good: Utility classes
+<div className="flex items-center justify-between p-4 bg-white rounded-lg shadow">
+
+// Avoid: Inline styles
+<div style={{ display: 'flex', padding: '16px' }}>
+```
+
+**Responsive Design:**
+```typescript
+<div className="
+  w-full              /* mobile */
+  md:w-1/2            /* tablet */
+  lg:w-1/3            /* desktop */
+  xl:w-1/4            /* large desktop */
+">
+```
+
+**Dark Theme:**
+```typescript
+<div className="
+  bg-white dark:bg-gray-900
+  text-black dark:text-white
+">
+```
+
+#### Component Styling
+
+**Using shadcn/ui:**
+```typescript
+import { Button } from '@/components/ui/button';
+import { Card, CardHeader, CardContent } from '@/components/ui/card';
+
+export const MyComponent = () => (
+  <Card>
+    <CardHeader>
+      <h2>Title</h2>
+    </CardHeader>
+    <CardContent>
+      <Button>Click me</Button>
+    </CardContent>
+  </Card>
+);
+```
+
+**Custom Classes:**
+```css
+/* client/src/index.css */
+.btn-custom {
+  @apply bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded;
+}
+
+.card-custom {
+  @apply bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6;
+}
+```
+
+### 11.4 State Management
+
+#### React Query
+
+**Query Setup:**
+```typescript
+import { useQuery } from '@tanstack/react-query';
+
+const { data, isLoading, error } = useQuery({
+  queryKey: ['/api/inventory'],
+  // queryFn is configured globally
+});
+```
+
+**Mutation Setup:**
+```typescript
+import { useMutation } from '@tanstack/react-query';
+import { queryClient, apiRequest } from '@/lib/queryClient';
+
+const mutation = useMutation({
+  mutationFn: (data: InsertInventoryItem) => 
+    apiRequest('/api/inventory', 'POST', data),
+  onSuccess: () => {
+    queryClient.invalidateQueries({ queryKey: ['/api/inventory'] });
+  }
+});
+```
+
+#### Firebase Realtime
+
+**Read Data:**
+```typescript
+import { ref, onValue } from 'firebase/database';
+import { database } from '@/lib/firebase';
+
+useEffect(() => {
+  const dataRef = ref(database, 'inventory');
+  
+  const unsubscribe = onValue(dataRef, (snapshot) => {
+    const data = snapshot.val();
+    setItems(Object.values(data));
+  });
+
+  return () => unsubscribe();
+}, []);
+```
+
+**Write Data:**
+```typescript
+import { ref, set, push } from 'firebase/database';
+
+// Create
+const newRef = push(ref(database, 'inventory'));
+await set(newRef, itemData);
+
+// Update
+await set(ref(database, `inventory/${itemId}`), updatedData);
+
+// Delete
+await remove(ref(database, `inventory/${itemId}`));
+```
+
+### 11.5 Adding Features
+
+#### Example: Adding a New Field
+
+**Step 1: Update Schema**
+```typescript
+// shared/schema.ts
+export const inventoryItemSchema = z.object({
+  // ... existing fields
+  warranty: z.string().optional(), // NEW FIELD
+});
+```
+
+**Step 2: Update TypeScript Types**
+```typescript
+// Types auto-generated from schema
+export type InventoryItem = z.infer<typeof inventoryItemSchema>;
+```
+
+**Step 3: Update Add Form**
+```typescript
+// client/src/components/AddItemModal.tsx
+<div>
+  <Label>Warranty</Label>
+  <Input
+    value={formData.warranty || ''}
+    onChange={(e) => setFormData({
+      ...formData,
+      warranty: e.target.value
+    })}
+  />
+</div>
+```
+
+**Step 4: Update Edit Form**
+```typescript
+// client/src/components/EditItemModal.tsx
+// Same as Add form
+```
+
+**Step 5: Update Table Display**
+```typescript
+// client/src/components/InventoryTable.tsx
+<TableHead>Warranty</TableHead>
+// ...
+<TableCell>{item.warranty || 'N/A'}</TableCell>
+```
+
+**Step 6: Test**
+1. Add new item with warranty
+2. Edit existing item
+3. Export CSV (should include warranty)
+4. Import CSV with warranty
+
+### 11.6 Testing
+
+#### Manual Testing
+
+**Feature Testing:**
+1. Test all CRUD operations
+2. Test with different user roles
+3. Test edge cases
+4. Test error handling
+
+**Checklist:**
+- [ ] Create item
+- [ ] Edit item
+- [ ] Delete item
+- [ ] CSV import
+- [ ] CSV export
+- [ ] Quotation creation
+- [ ] PDF generation
+- [ ] Stock level calculation
+- [ ] User permissions
+- [ ] Audit logging
+
+#### Browser Testing
+
+**Browsers:**
+- Chrome/Edge (Chromium)
+- Firefox
+- Safari
+
+**Devices:**
+- Desktop (1920×1080)
+- Tablet (768×1024)
+- Mobile (375×667)
+
+#### Firebase Testing
+
+**Test Data:**
+```typescript
+// Create test items
+const testItems = [
+  {
+    branch: 'main_warehouse',
+    productName: 'Test Item 1',
+    sku: 'TEST-001',
+    currentStock: 10,
+    unitPrice: 100
+  },
+  // More test items...
+];
+```
+
+**Cleanup:**
+```typescript
+// Delete test data after testing
+await remove(ref(database, 'test-data'));
+```
+
+---
+
+## 12. DEPLOYMENT
+
+### 12.1 Replit Deployment
+
+#### Initial Setup
+
+**1. Create Replit Project**
+- Go to replit.com
+- Create new Repl
+- Import from GitHub or upload code
+
+**2. Configure Secrets**
+- Click "Secrets" tab (lock icon)
+- Add environment variables:
+```
+VITE_FIREBASE_API_KEY=your_key
+VITE_FIREBASE_PROJECT_ID=your_project
+VITE_FIREBASE_APP_ID=your_app
+```
+
+**3. Install Dependencies**
+```bash
+npm install
+```
+
+**4. Start Development**
+```bash
+npm run dev
+```
+
+**5. Publish**
+- Click "Publish" button
+- Configure deployment settings
+- Deploy to production
+
+#### Replit Configuration
+
+**replit.nix:**
+```nix
+{ pkgs }: {
+  deps = [
+    pkgs.nodejs-20_x
+  ];
+}
+```
+
+**.replit:**
+```toml
+run = "npm run dev"
+entrypoint = "server/index.ts"
+
+[deployment]
+run = ["npm", "run", "start"]
+build = ["npm", "run", "build"]
+```
+
+#### Environment
+
+**Development:**
+- URL: `https://your-repl.repl.co`
+- Auto-reload on code changes
+- Firebase Realtime DB
+
+**Production:**
+- URL: `https://your-repl.repl.app`
+- Manual deployment required
+- Optimized build
+- Firebase Realtime DB
+
+### 12.2 Production Setup
+
+#### Build Process
+
+**1. Build Frontend**
+```bash
+vite build
+```
+
+**Output:**
+- `dist/index.html` - Main HTML
+- `dist/assets/` - Bundled JS/CSS
+- Source maps for debugging
+
+**2. Build Backend**
+```bash
+esbuild server/index.ts \
+  --platform=node \
+  --packages=external \
+  --bundle \
+  --format=esm \
+  --outdir=dist
+```
+
+**3. Start Production Server**
+```bash
+NODE_ENV=production node dist/index.js
+```
+
+#### Firebase Production Setup
+
+**1. Set Security Rules**
+```json
+{
+  "rules": {
+    "users": {
+      "$uid": {
+        ".read": "auth != null",
+        ".write": "auth.uid === $uid || root.child('users').child(auth.uid).child('role').val() === 'superadmin'"
+      }
+    },
+    "inventory": {
+      ".read": "auth != null",
+      "$itemId": {
+        ".write": "root.child('users').child(auth.uid).child('role').val() === 'admin' || root.child('users').child(auth.uid).child('role').val() === 'superadmin'"
+      }
+    }
+  }
+}
+```
+
+**2. Enable Backup**
+- Firebase Console → Database
+- Enable automated daily backups
+
+**3. Set Indexes**
+- Firebase Console → Database
+- Add indexes for:
+  - `/inventory` ordered by `branch`
+  - `/inventory` ordered by `sku`
+  - `/auditLogs` ordered by `timestamp`
+
+### 12.3 Security Considerations
+
+#### Critical Security Steps
+
+**1. Remove Super Admin Bypass**
+```typescript
+// client/src/contexts/AuthContext.tsx
+// DELETE OR COMMENT OUT:
+const checkSuperAdminBypass = () => {
+  // REMOVE THIS ENTIRE FUNCTION IN PRODUCTION
+};
+```
+
+**2. Secure Firebase Rules**
+- Implement role-based rules
+- Prevent unauthorized writes
+- Audit rule effectiveness
+
+**3. Environment Variables**
+- Never commit `.env` to git
+- Use secrets management
+- Rotate keys periodically
+
+**4. HTTPS Only**
+- Ensure SSL certificate active
+- Redirect HTTP to HTTPS
+- Use secure cookies
+
+**5. Input Validation**
+- All user inputs validated with Zod
+- Sanitize before display
+- Prevent XSS attacks
+
+**6. Rate Limiting**
+```typescript
+// Consider implementing rate limiting for API routes
+import rateLimit from 'express-rate-limit';
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100 // limit each IP to 100 requests per windowMs
+});
+
+app.use('/api/', limiter);
+```
+
+#### Security Checklist
+
+Production Deployment Checklist:
+- [ ] Super admin bypass removed
+- [ ] Firebase security rules updated
+- [ ] Environment variables secured
+- [ ] HTTPS enabled
+- [ ] Input validation active
+- [ ] Error messages don't expose internals
+- [ ] Audit logging enabled
+- [ ] Regular backups configured
+- [ ] Password policies enforced
+- [ ] Session timeout configured
+
+### 12.4 Environment Configuration
+
+#### Development Environment
+```env
+NODE_ENV=development
+VITE_FIREBASE_API_KEY=dev_key
+VITE_FIREBASE_PROJECT_ID=dev_project
+VITE_FIREBASE_APP_ID=dev_app
+```
+
+#### Production Environment
+```env
+NODE_ENV=production
+VITE_FIREBASE_API_KEY=prod_key
+VITE_FIREBASE_PROJECT_ID=prod_project
+VITE_FIREBASE_APP_ID=prod_app
+```
+
+#### Staging Environment (Optional)
+```env
+NODE_ENV=staging
+VITE_FIREBASE_API_KEY=staging_key
+VITE_FIREBASE_PROJECT_ID=staging_project
+VITE_FIREBASE_APP_ID=staging_app
+```
+
+---
+
+## 13. TROUBLESHOOTING
+
+### 13.1 Common Issues
+
+#### Issue: Application Won't Start
+
+**Symptom:**
+```
+Error: Cannot find module 'xyz'
+```
+
+**Solution:**
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
+
+# Or use npm ci for clean install
+npm ci
+```
+
+---
+
+#### Issue: "Firebase Configuration Required" Screen
+
+**Symptom:**
+- Application loads but shows configuration warning
+- Cannot login or access features
+
+**Solution:**
+1. Check `.env` file exists
+2. Verify environment variables:
+```env
+VITE_FIREBASE_API_KEY=your_key_here
+VITE_FIREBASE_PROJECT_ID=your_project_here
+VITE_FIREBASE_APP_ID=your_app_here
+```
+3. Restart development server
+4. Clear browser cache
+
+---
+
+#### Issue: Build Fails
+
+**Symptom:**
+```
+Build failed with TypeScript errors
+```
+
+**Solution:**
+```bash
+# Check TypeScript errors
+npm run check
+
+# Fix errors shown
+# Then rebuild
+npm run build
+```
+
+---
+
+#### Issue: Port Already in Use
+
+**Symptom:**
+```
+Error: Port 5000 is already in use
+```
+
+**Solution:**
+```bash
+# Find process using port 5000
+lsof -i :5000
+
+# Kill the process
+kill -9 <PID>
+
+# Or use different port
+PORT=3000 npm run dev
+```
+
+### 13.2 Firebase Issues
+
+#### Issue: Authentication Fails
+
+**Symptom:**
+- Cannot login
+- "User not found" error
+
+**Solution:**
+1. Check Firebase Auth is enabled
+2. Verify email/password provider is active
+3. Check user exists in Firebase Console
+4. Clear browser localStorage:
+```javascript
+localStorage.clear();
+```
+
+---
+
+#### Issue: Real-time Updates Not Working
+
+**Symptom:**
+- Changes don't appear for other users
+- Data seems stale
+
+**Solution:**
+1. Check internet connection
+2. Verify Firebase Realtime Database rules:
+```json
+{
+  "rules": {
+    ".read": "auth != null",
+    ".write": "auth != null"
+  }
+}
+```
+3. Check browser console for errors
+4. Refresh page and re-login
+
+---
+
+#### Issue: "Permission Denied" in Database
+
+**Symptom:**
+```
+Firebase Error: Permission denied
+```
+
+**Solution:**
+1. Check Firebase security rules
+2. Verify user is authenticated
+3. Check user role permissions
+4. Review audit logs for details
+
+---
+
+#### Issue: Data Not Syncing
+
+**Symptom:**
+- Local changes don't persist
+- Database shows old data
+
+**Solution:**
+1. Check Firebase Console for data
+2. Verify write operations complete
+3. Check for JavaScript errors
+4. Review audit logs for failed writes
+
+### 13.3 Performance Issues
+
+#### Issue: Slow Page Load
+
+**Symptoms:**
+- Initial load takes >3 seconds
+- White screen on load
+
+**Solutions:**
+1. **Check Bundle Size:**
+```bash
+npm run build
+# Review bundle sizes in output
+```
+
+2. **Optimize Images:**
+- Compress images
+- Use WebP format
+- Lazy load images
+
+3. **Code Splitting:**
+```typescript
+// Use React.lazy for code splitting
+const HeavyComponent = React.lazy(() => import('./HeavyComponent'));
+```
+
+4. **Check Network:**
+- Use browser DevTools → Network tab
+- Identify slow requests
+- Optimize API calls
+
+---
+
+#### Issue: Slow Firebase Queries
+
+**Symptoms:**
+- Data takes >2 seconds to load
+- Laggy UI interactions
+
+**Solutions:**
+1. **Add Database Indexes:**
+- Firebase Console → Database
+- Create indexes for frequent queries
+
+2. **Limit Data Fetched:**
+```typescript
+// Instead of fetching all data
+const allData = await get(ref(database, 'inventory'));
+
+// Fetch specific branch only
+const branchData = await get(
+  query(
+    ref(database, 'inventory'),
+    orderByChild('branch'),
+    equalTo('main_warehouse')
+  )
+);
+```
+
+3. **Implement Pagination:**
+```typescript
+// Limit results
+const limitedData = await get(
+  query(
+    ref(database, 'inventory'),
+    limitToFirst(50)
+  )
+);
+```
+
+---
+
+#### Issue: Memory Leaks
+
+**Symptoms:**
+- Browser becomes slow over time
+- High memory usage
+
+**Solutions:**
+1. **Cleanup Firebase Listeners:**
+```typescript
+useEffect(() => {
+  const unsubscribe = onValue(ref, callback);
+  
+  // IMPORTANT: Return cleanup function
+  return () => unsubscribe();
+}, []);
+```
+
+2. **Cancel Pending Requests:**
+```typescript
+useEffect(() => {
+  const controller = new AbortController();
+  
+  fetch(url, { signal: controller.signal });
+  
+  return () => controller.abort();
+}, []);
+```
+
+### 13.4 CSV Import Issues
+
+#### Issue: Import Fails with Validation Errors
+
+**Symptom:**
+```
+Line 5: Invalid branch name "Downtown"
+Line 12: Missing required field "Product Name"
+```
+
+**Solution:**
+1. **Check Branch Names:**
+   - Must be: `main_warehouse`, `estancia`, or `greenhills`
+   - Case-sensitive
+   - Underscore, not space
+
+2. **Verify Required Fields:**
+   - Branch
+   - Product Type
+   - Product Name
+   - SKU
+   - Unit Price
+   - Current Stock
+
+3. **Check Data Types:**
+   - Unit Price: Number (not currency formatted)
+   - Current Stock: Integer
+   - Thresholds: 0-100
+
+4. **Template Example:**
+```csv
+Branch,Product Type,Product Name,SKU,Unit Price,Current Stock
+main_warehouse,Electronics,Laptop,SKU-001,45000,25
+```
+
+---
+
+#### Issue: Partial Import Success
+
+**Symptom:**
+- Some items imported
+- Others show errors
+
+**Solution:**
+1. Review error list
+2. Fix errors in CSV
+3. Delete successfully imported items OR
+4. Re-import with corrected data (duplicates will update existing)
+
+---
+
+#### Issue: Encoding Problems
+
+**Symptom:**
+- Special characters appear garbled
+- Accented characters broken
+
+**Solution:**
+1. Save CSV as UTF-8:
+   - Excel: Save As → CSV UTF-8
+   - Google Sheets: Download → CSV
+2. Use text editor to verify encoding
+3. Re-import corrected file
+
+---
+
+### Common Error Messages
+
+**"User not authenticated"**
+- Cause: Not logged in
+- Solution: Login again
+
+**"Insufficient permissions"**
+- Cause: Staff role trying admin action
+- Solution: Request admin access
+
+**"SKU already exists"**
+- Cause: Duplicate SKU in database
+- Solution: Use unique SKU or update existing
+
+**"Invalid threshold percentage"**
+- Cause: Threshold not 0-100
+- Solution: Enter valid percentage
+
+**"Firebase not configured"**
+- Cause: Missing environment variables
+- Solution: Add Firebase config to .env
+
+**"Database operation failed"**
+- Cause: Network or permissions issue
+- Solution: Check connection and Firebase rules
+
+---
+
+## 14. CHANGELOG
+
+### 14.1 October 2025 - Dynamic Thresholds
+
+**Version**: 2.0  
+**Date**: October 2, 2025  
+**Type**: Major Enhancement
+
+**Summary:**
+Implemented dynamic per-product stock level threshold system with percentage-based calculations.
+
+**Changes:**
+
+**Schema Updates:**
+- Added `targetStockLevel: number` (default: 100)
+- Added `lowThreshold: number` (default: 25)
+- Added `mediumThreshold: number` (default: 50)
+- Updated inventory item schema in `shared/schema.ts`
+
+**New Functions:**
+- `getStockLevel()`: Calculate stock status from thresholds
+- Percentage-based calculation algorithm
+
+**Component Updates:**
+- `AddItemModal`: Threshold configuration fields
+- `EditItemModal`: Admin-only threshold editing
+- `StockBadge`: Percentage display
+- `InventoryTable`: Updated badge usage
+- `Dashboard`: Dynamic threshold calculations
+- `HomePage`: Filter using dynamic thresholds
+
+**UI Enhancements:**
+- Stock badges show percentages
+- Hover tooltips with details
+- Visual indicators (red/yellow/green)
+- Admin-only threshold controls
+
+**CSV Support:**
+- Export includes threshold columns
+- Import supports optional threshold fields
+- Defaults applied if columns missing
+
+**Benefits:**
+- Customizable alerts per product
+- High-value items: Higher thresholds
+- Fast-moving items: Lower thresholds
+- More precise inventory control
+
+**Migration:**
+- Existing items get default thresholds (100, 25%, 50%)
+- No data loss
+- Backward compatible
+
+### 14.2 August 2025 - Interface Simplification
+
+**Version**: 1.5  
+**Date**: August 11, 2025  
+**Type**: Major Change
+
+**Summary:**
+Simplified inventory tracking by replacing 4-column stock system with single "Current Stock" field.
+
+**Removed:**
+- BEG Stock (beginning inventory)
+- IN Stock (items received)
+- OUT Stock (items sold)
+- END Stock (ending inventory)
+
+**Added:**
+- Single `currentStock: number` field
+- Direct quantity entry
+- No manual calculations
+
+**Updated Components:**
+- `InventoryTable`: Single stock column
+- `AddItemModal`: One stock field
+- `EditItemModal`: Simplified form
+- `AnalyticsCharts`: Current stock display
+- `CSVImportExport`: Updated format
+
+**Reason:**
+- Warehouse team feedback
+- Requested simpler interface
+- Reduce data entry time
+- Minimize calculation errors
+
+**Benefits:**
+- Faster data entry
+- Easier training
+- Fewer mistakes
+- Real-time accuracy
+
+### 14.3 August 2025 - Quotation System
+
+**Version**: 1.0  
+**Date**: August 11, 2025  
+**Type**: Feature Addition
+
+**Summary:**
+Added comprehensive quotation management system.
+
+**New Features:**
+- Professional quotation creation
+- Customer information management
+- Inventory integration
+- Line item management
+- Financial calculations (subtotal, discount, VAT)
+- Status workflow (draft → sent → accepted/rejected/expired)
+- PDF generation
+- Quotation numbering (QUO-YYYYMMDD-XXXX)
+
+**New Components:**
+- `QuotationManager`: Main interface
+- `CreateQuotationModal`: Creation form
+- `ViewQuotationModal`: Display and PDF
+
+**New Hooks:**
+- `useQuotations`: Quotation operations
+
+**Database:**
+- `/quotations/{id}`: Quotation data
+- `/quotationItems/{quotationId}/{itemId}`: Line items
+
+**Schemas:**
+- `quotationSchema`: Quotation model
+- `quotationItemSchema`: Line item model
+
+**Use Cases:**
+- Sales team quotation generation
+- Customer price proposals
+- Order management
+- Revenue tracking
+
+### 14.4 June 2025 - Initial Release
+
+**Version**: 1.0  
+**Date**: June 26, 2025  
+**Type**: Initial Release
+
+**Summary:**
+First production-ready release of Gamachan Inventory Management System.
+
+**Core Features:**
+- Multi-branch inventory management
+- Real-time stock tracking with 4-column system
+- Role-based authentication (Staff, Admin, SuperAdmin)
+- Firebase integration (Auth + Realtime DB)
+- Dashboard with analytics
+- CSV import/export
+- User management
+- Audit logging
+
+**Technology Stack:**
+- React 18 + TypeScript
+- Node.js + Express
+- Firebase Realtime Database
+- Tailwind CSS + shadcn/ui
+- Vite build tool
+
+**Deployment:**
+- Replit platform
+- Production environment configured
+- All core features functional
+
+**Initial Branches:**
+- Main Warehouse
+- Estancia
+- Greenhills
+
+---
+
+## 15. APPENDIX
+
+### 15.1 File Structure Reference
+
+#### Frontend Files (client/src/)
+```
+components/
+  ui/ - shadcn/ui base components (30+ files)
+  AddItemModal.tsx - Add inventory item modal
+  AnalyticsCharts.tsx - Data visualization charts
+  AuditLogs.tsx - Audit trail display
+  BranchTabs.tsx - Branch filter tabs
+  CreateQuotationModal.tsx - Quotation creation
+  CSVImportExport.tsx - CSV operations
+  Dashboard.tsx - KPI dashboard
+  EditItemModal.tsx - Edit inventory item modal
+  InventoryTable.tsx - Main data table
+  Layout.tsx - App layout wrapper
+  QuotationManager.tsx - Quotation management
+  SearchFilters.tsx - Filter controls
+  StockBadge.tsx - Stock level indicator
+  UserManagement.tsx - User administration
+  ViewQuotationModal.tsx - Quotation display
+
+contexts/
+  AuthContext.tsx - Authentication provider
+
+hooks/
+  useAuth.ts - Authentication hook
+  useInventory.ts - Inventory operations
+  useQuotations.ts - Quotation operations
+  use-toast.ts - Toast notifications
+
+lib/
+  firebase.ts - Firebase configuration
+  queryClient.ts - React Query setup
+  utils.ts - Utility functions
+
+pages/
+  HomePage.tsx - Main application page
+  LoginPage.tsx - Authentication page
+  not-found.tsx - 404 page
+
+App.tsx - Router configuration
+main.tsx - Application entry point
+index.css - Global styles
+```
+
+#### Backend Files (server/)
+```
+index.ts - Express server setup
+routes.ts - API route definitions
+storage.ts - Storage interface (future)
+vite.ts - Vite dev server config
+```
+
+#### Shared Files (shared/)
+```
+schema.ts - All TypeScript types and Zod schemas
+```
+
+#### Configuration Files
+```
+components.json - shadcn/ui configuration
+drizzle.config.ts - Drizzle ORM setup
+package.json - Dependencies and scripts
+postcss.config.js - PostCSS configuration
+tailwind.config.ts - Tailwind CSS config
+tsconfig.json - TypeScript compiler options
+vite.config.ts - Vite build configuration
+```
+
+### 15.2 Component Reference
+
+#### Data Display Components
+
+**InventoryTable**
+- Purpose: Display inventory items in table
+- Props: `{ items: InventoryItem[] }`
+- Features: Sort, filter, edit, delete, bulk select
+
+**Dashboard**
+- Purpose: Display KPIs
+- Props: `{ items: InventoryItem[] }`
+- Features: Total items, low stock, branches, value
+
+**AnalyticsCharts**
+- Purpose: Data visualization
+- Props: `{ items: InventoryItem[] }`
+- Features: Pie chart, bar chart, Recharts
+
+**AuditLogs**
+- Purpose: Show activity log
+- Props: None (manages own state)
+- Features: Action filtering, user attribution
+
+**StockBadge**
+- Purpose: Visual stock indicator
+- Props: `{ currentStock, targetStockLevel, lowThreshold, mediumThreshold }`
+- Features: Color-coded, percentage display
+
+#### Form Components
+
+**AddItemModal**
+- Purpose: Create inventory item
+- Props: `{ isOpen, onClose }`
+- Features: Form validation, threshold config
+
+**EditItemModal**
+- Purpose: Update inventory item
+- Props: `{ isOpen, onClose, item }`
+- Features: Pre-populated, role-based fields
+
+**CreateQuotationModal**
+- Purpose: Create quotation
+- Props: `{ isOpen, onClose }`
+- Features: Customer info, line items, calculations
+
+#### Layout Components
+
+**Layout**
+- Purpose: App shell
+- Props: `{ children, activeTab, onTabChange }`
+- Features: Navigation, sidebar, user menu
+
+**BranchTabs**
+- Purpose: Branch filtering
+- Props: `{ selectedBranch, onBranchChange }`
+- Features: All branches, specific branch tabs
+
+**SearchFilters**
+- Purpose: Filter controls
+- Props: `{ searchTerm, onSearchChange, ... }`
+- Features: Search, product type, stock level filters
+
+#### Management Components
+
+**UserManagement**
+- Purpose: User administration (SuperAdmin)
+- Props: None
+- Features: Create, edit, delete users
+
+**QuotationManager**
+- Purpose: Quotation list and management
+- Props: None
+- Features: Create, view, edit, delete quotations
+
+**CSVImportExport**
+- Purpose: Bulk operations
+- Props: `{ items, selectedBranch }`
+- Features: Import validation, export to CSV
+
+### 15.3 Keyboard Shortcuts
+
+**Global:**
+- `Ctrl/Cmd + K`: Open search (future feature)
+- `Ctrl/Cmd + /`: Show keyboard shortcuts (future feature)
+- `Esc`: Close modal/dialog
+
+**Navigation:**
+- `Tab`: Next field
+- `Shift + Tab`: Previous field
+- `Enter`: Submit form / Confirm action
+
+**Tables:**
+- `↑/↓`: Navigate rows
+- `Space`: Select/deselect row
+- `Ctrl/Cmd + A`: Select all
+
+**Forms:**
+- `Ctrl/Cmd + Enter`: Submit form
+- `Esc`: Cancel and close
+
+### 15.4 Resources
+
+#### Documentation
+- [Firebase Docs](https://firebase.google.com/docs)
+- [React Docs](https://react.dev)
+- [TypeScript Handbook](https://www.typescriptlang.org/docs/)
+- [Tailwind CSS](https://tailwindcss.com/docs)
+- [shadcn/ui](https://ui.shadcn.com/)
+- [Vite Guide](https://vitejs.dev/guide/)
+- [TanStack Query](https://tanstack.com/query/latest)
+
+#### Tools
+- [Firebase Console](https://console.firebase.google.com/)
+- [Replit](https://replit.com)
+- [VS Code](https://code.visualstudio.com/)
+
+#### Learning Resources
+- React Tutorial: https://react.dev/learn
+- TypeScript in 5 minutes: https://www.typescriptlang.org/docs/handbook/typescript-in-5-minutes.html
+- Tailwind CSS Tutorial: https://tailwindcss.com/docs/installation
+- Firebase Quickstart: https://firebase.google.com/docs/web/setup
+
+#### Community
+- React Community: https://react.dev/community
+- Tailwind Discord: https://tailwindcss.com/discord
+- Firebase Slack: https://firebase.community
+
+---
+
+## 📞 SUPPORT
+
+For issues, questions, or feature requests:
+1. Check this documentation first
+2. Review Firebase Console for database/auth issues
+3. Check browser console for frontend errors
+4. Review server logs for backend issues
+5. Contact system administrator
+
+---
+
+## 📄 LICENSE
+
+This project is licensed under the MIT License.
+
+---
+
+**End of Documentation**
+
+**Last Updated**: October 21, 2025  
+**Version**: 2.0  
+**Maintainer**: Gamachan Development Team
+
+---
+
+**Built with ❤️ for warehouse teams who need simple, powerful inventory management.**
+
+🐸 **Gamachan - Adaptable. Reliable. Evolving.**
